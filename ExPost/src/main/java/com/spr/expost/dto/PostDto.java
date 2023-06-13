@@ -1,0 +1,100 @@
+package com.spr.expost.dto;
+
+import com.spr.expost.vo.Post;
+import lombok.*;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+public class PostDto {
+    private Long postNo;
+    private String title;
+    private String content;
+    private String author;
+    private String postPassword;
+    private LocalDateTime createDate;
+    private LocalDateTime updateDate;
+
+    public Post toEntity() {
+        Post build = Post.builder()
+                .author(author)
+                .title(title)
+                .content(content)
+                .postPassword(postPassword)
+                .build();
+        return build;
+    }
+
+    public Post toUpdateEntity() {
+        Post build = Post.builder()
+                .postNo(postNo)
+                .author(author)
+                .title(title)
+                .content(content)
+                .postPassword(postPassword)
+                .build();
+        return build;
+    }
+
+    @Builder
+    public PostDto(Long postNo, String title, String content, String author, String postPassword,LocalDateTime createDate, LocalDateTime updateDate) {
+        this.postNo = postNo;
+        this.author = author;
+        this.postPassword = postPassword;
+        this.title = title;
+        this.content = content;
+        this.createDate = createDate;
+        this.updateDate = updateDate;
+    }
+
+    // 등록
+    public PostDto(String title, String content, String author, String postPassword) {
+        this.author = author;
+        this.postPassword = postPassword;
+        this.title = title;
+        this.content = content;
+    }
+
+    //전체내용 표시
+    public List<String> toListString(List<PostDto> dtoList) {
+        List<String> listString = new ArrayList<>();
+        for (int i = 0; i <dtoList.size(); i ++) {
+            listString.add(
+                   "글번호 = " + dtoList.get(i).getPostNo()
+                     + " {" +
+                            "제목='" + dtoList.get(i).getTitle() + '\'' +
+                            ", 작성자명='" + dtoList.get(i).getAuthor() + '\'' +
+                            ", 작성내용='" + dtoList.get(i).getContent() + '\'' +
+                            ", 작성날짜=" + dtoList.get(i).getCreateDate() +
+                            '}'
+
+            );
+        }
+
+        return listString;
+    }
+
+    //상세내용 표시
+    public String toViewString(PostDto dto) {
+        String nowDate = "";
+
+        // 수정일자가 있으면 수정일자 우선출력
+        if (dto.getUpdateDate() != null) {
+            nowDate = dto.getUpdateDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        } else {
+            nowDate =  dto.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        }
+        return "상세정보 {" +
+                "제목='" + dto.getTitle() + '\'' +
+                ", 작성자명='" + dto.getAuthor() + '\'' +
+                ", 작성내용='" + dto.getContent() + '\'' +
+                ", 작성날짜=" + nowDate +
+                '}';
+    }
+}

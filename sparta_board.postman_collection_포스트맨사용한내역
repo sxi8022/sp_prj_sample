@@ -1,0 +1,75 @@
+{
+	"info": {
+		"_postman_id": "5c77701f-e5f4-4c56-aa08-cdc1a3b3597e",
+		"name": "sparta_board",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9928633"
+	},
+	"item": [
+		{
+			"name": "insert",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"author\": \"태훈킴8\",\r\n    \"title\": \"테스트8등록\",\r\n    \"content\": \"테스트포스트맨완료입니다\",\r\n    \"postPassword\": \"ko2457#\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/board/postAdd",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"board",
+						"postAdd"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "delete",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/board/postlist",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"board",
+						"postlist"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
