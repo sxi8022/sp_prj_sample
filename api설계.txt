@@ -1,0 +1,14 @@
+게시글 실행 컨트롤러 
+PostController
+@RequestMapping("/board") 설정되어있음 
+
+1. 전체조회 
+url : http://localhost:8080/board/postlist
+2. 상세조회
+url : http://localhost:8080/board/post/1
+3. 등록
+url : http://localhost:8080/board/post
+4. 수정
+url : http://localhost:8080/board/post/update/2
+5. 삭제 
+url : http://localhost:8080/board/post/delete/2
