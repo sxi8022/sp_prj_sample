@@ -4,7 +4,6 @@ import com.spr.expost.dto.PostDto;
 import com.spr.expost.service.PostService;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -25,7 +24,7 @@ public class PostController {
         List<String> toListString = tempDto.toListString(postDtoList);
         String sb = "";
         for (int i=0; i < toListString.size(); i++) {
-           sb += (toListString.get(i) + "<br />");
+           sb += (toListString.get(i) + "\n");
         }
         return sb;
     }
@@ -45,48 +44,54 @@ public class PostController {
     public String write(@RequestBody PostDto postDto) {
         PostDto dto = new PostDto();
         Long key =postService.savePost(postDto);
-        String result = dto.toViewString(postDto);
-        postDto.setPostNo(key);
-        postDto.setCreateDate(LocalDateTime.now());
+        PostDto resultDto = postService.getPost(key);
+        String result = dto.toViewString(resultDto);
         return result;
-        // return "redirect:/board/postlist";
     }
 
     /*
      * 수정
      * */
-    @PostMapping("/post/update/{postNo}")
+    @PutMapping("/post/update/{postNo}")
     public String update(@PathVariable("postNo") Long postNo, @RequestBody  PostDto postDto) {
         PostDto origin = postService.getPost(postNo);
-        String resultStr = "";
-        if(origin.getPostPassword().equals(postDto.getPostPassword())) {
-            PostDto dto = new PostDto();
-            Long key = postService.updatePost(postDto);
-            postDto.setPostNo(key);
-            postDto.setCreateDate(LocalDateTime.now());
-            postDto.setUpdateDate(LocalDateTime.now());
-            resultStr = dto.toViewString(postDto);
+        String result = "";
+        if (origin != null) {
+            if(origin.getPostPassword().equals(postDto.getPostPassword())) {
+                postDto.setPostNo(postNo);
+                PostDto dto = new PostDto();
+                Long key = postService.updatePost(postDto);
+                PostDto resultDto = postService.getPost(key);
+                result = dto.toViewString(resultDto);
+            } else {
+                result = "비밀번호가 올바르지 않습니다.";
+            }
         } else {
-            resultStr = "비밀번호가 올바르지 않습니다.";
+            result = "수정할 게시글이 존재하지 않습니다.";
         }
-        return resultStr;
+
+        return result;
     }
 
     /*
     * 삭제
     * */
     @DeleteMapping("/post/delete/{postNo}")
-    public String delete(@PathVariable("postNo") Long postNo, @RequestBody  PostDto postDto) {
+    public String delete(@PathVariable("postNo") Long postNo, String password) {
         PostDto origin = postService.getPost(postNo);
-        String resultStr = "";
-        if(origin.getPostPassword().equals(postDto.getPostPassword())) {
-            postService.deletePost(postNo);
-            resultStr = "게시글을 삭제하였습니다.";
+        String result = "";
+        if (origin != null) {
+            if (origin.getPostPassword().equals(password)) {
+                postService.deletePost(postNo);
+                result = "게시글을 삭제하였습니다.";
+            } else {
+                result = "비밀번호가 올바르지 않습니다.";
+            }
         } else {
-            resultStr = "비밀번호가 올바르지 않습니다.";
+            result = "수정할 게시글이 존재하지 않습니다.";
         }
 
-        return resultStr;
+        return result;
     }
     
 }

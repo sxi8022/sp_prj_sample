@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"author\": \"태훈킴8\",\r\n    \"title\": \"테스트8등록\",\r\n    \"content\": \"테스트포스트맨완료입니다\",\r\n    \"postPassword\": \"ko2457#\"\r\n}",
+					"raw": "{\r\n    \"author\": \"태훈킴15\",\r\n    \"title\": \"테스트15등록\",\r\n    \"content\": \"테스트포스트맨완료입니다\",\r\n    \"postPassword\": \"ko2457#\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -21,7 +21,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/board/postAdd",
+					"raw": "http://localhost:8080/board/post",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -29,7 +29,7 @@
 					"port": "8080",
 					"path": [
 						"board",
-						"postAdd"
+						"post"
 					]
 				}
 			},
@@ -38,21 +38,74 @@
 		{
 			"name": "update",
 			"request": {
-				"method": "GET",
-				"header": []
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"author\": \"태훈킴13수정11\",\r\n    \"title\": \"테스트10등록수정11\",\r\n    \"content\": \"테스트포스트맨완료입니다!\",\r\n    \"postPassword\": \"ko2457#\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/board/post/update/16",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"board",
+						"post",
+						"update",
+						"16"
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "delete",
 			"request": {
-				"method": "GET",
-				"header": []
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "postNo",
+							"value": "13",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "password",
+							"value": "ko2457#",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/board/post/delete/20",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"board",
+						"post",
+						"delete",
+						"20"
+					]
+				}
 			},
 			"response": []
 		},
 		{
-			"name": "New Request",
+			"name": "list",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -66,6 +119,27 @@
 					"path": [
 						"board",
 						"postlist"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/board/post/5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"board",
+						"post",
+						"5"
 					]
 				}
 			},

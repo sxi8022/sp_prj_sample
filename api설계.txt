@@ -8,18 +8,22 @@ url : http://localhost:8080/board/postlist
 request : 
 response : List<Post>(게시글 객체 목록)
 2. 상세조회
+Method : get
 url : http://localhost:8080/board/post/1
 request : 게시글번호
 response : Post(게시글 객체)
 3. 등록
+Method : Post
 url : http://localhost:8080/board/post
 request : Post(게시글 객체)
 response : Post(게시글 객체) 
 4. 수정
+Method : Put
 url : http://localhost:8080/board/post/update/2
 request : Post(게시글 객체), 게시글번호
 response : Post(게시글 객체)
 5. 삭제 
+Method : Delete
 url : http://localhost:8080/board/post/delete/2
 request : Post(게시글 객체), 게시글번호
 response : 비밀번호가 맞으면 삭제후 삭제되었습니다. 맞지않으면 삭제하지않고 

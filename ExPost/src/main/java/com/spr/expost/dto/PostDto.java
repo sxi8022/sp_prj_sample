@@ -84,17 +84,23 @@ public class PostDto {
     public String toViewString(PostDto dto) {
         String nowDate = "";
 
-        // 수정일자가 있으면 수정일자 우선출력
-        if (dto.getUpdateDate() != null) {
-            nowDate = dto.getUpdateDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        } else {
-            nowDate =  dto.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        try {
+            // 수정일자가 있으면 수정일자 우선출력
+            if (dto.getUpdateDate() != null) {
+                nowDate = dto.getUpdateDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            } else {
+                nowDate =  dto.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            }
+            return "상세정보 {" +
+                    "제목='" + dto.getTitle() + '\'' +
+                    ", 작성자명='" + dto.getAuthor() + '\'' +
+                    ", 작성내용='" + dto.getContent() + '\'' +
+                    ", 작성날짜=" + nowDate +
+                    '}';
+        } catch (NullPointerException ex) {
+            System.out.println("필수값입력이 누락되었습니다. 관리자에게 문의하여 주세요.");
         }
-        return "상세정보 {" +
-                "제목='" + dto.getTitle() + '\'' +
-                ", 작성자명='" + dto.getAuthor() + '\'' +
-                ", 작성내용='" + dto.getContent() + '\'' +
-                ", 작성날짜=" + nowDate +
-                '}';
+
+        return  "";
     }
 }

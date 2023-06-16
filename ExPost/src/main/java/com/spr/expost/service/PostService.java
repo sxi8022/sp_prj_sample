@@ -64,20 +64,27 @@ public class PostService {
         return postDtoList;
     }
 
+    /*
+     * 게시글 정보 얻기
+     * */
     @Transactional
     public PostDto getPost(Long postNo) {
         Optional<Post> postWrapper = postRepository.findById(postNo);
-        Post post = postWrapper.get();
+        PostDto postDto = null;
+        if (postWrapper.isPresent()) {
+           Post post = postWrapper.get();
 
-        PostDto postDto = PostDto.builder()
-                .postNo(post.getPostNo())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .author(post.getAuthor())
-                .postPassword(post.getPostPassword())
-                .createDate(post.getCreateDate())
-                .updateDate(post.getUpdateDate())
-                .build();
+            postDto = PostDto.builder()
+                    .postNo(post.getPostNo())
+                    .title(post.getTitle())
+                    .content(post.getContent())
+                    .author(post.getAuthor())
+                    .postPassword(post.getPostPassword())
+                    .createDate(post.getCreateDate())
+                    .updateDate(post.getUpdateDate())
+                    .build();
+        }
+
         return  postDto;
     }
 
