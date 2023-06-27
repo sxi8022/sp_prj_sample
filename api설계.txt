@@ -1,30 +1,79 @@
-게시글 실행 컨트롤러 
-PostController
-@RequestMapping("/board") 설정되어있음 
+메모 프로젝트 api 설계 
+공통 url : http://localhost:8080 (모든 url은 이 url로 시작함)
 
+
+-게시글 실행 컨트롤러 
+PostController
+@RequestMapping("/api/board") 설정되어있음 
+
+-- 2023/06/20 이전 (1~5번) 
 1. 전체조회 
 Method : get
-url : http://localhost:8080/board/postlist
+url : /api/board/postlist
 request : 
 response : List<Post>(게시글 객체 목록)
 2. 상세조회
 Method : get
-url : http://localhost:8080/board/post/1
+url : /api/board/post/1
 request : 게시글번호
 response : Post(게시글 객체)
 3. 등록
 Method : Post
-url : http://localhost:8080/board/post
+url : /api/board/post
 request : Post(게시글 객체)
 response : Post(게시글 객체) 
 4. 수정
 Method : Put
-url : http://localhost:8080/board/post/update/2
+url : /api/board/post/update/2
 request : Post(게시글 객체), 게시글번호
 response : Post(게시글 객체)
 5. 삭제 
 Method : Delete
-url : http://localhost:8080/board/post/delete/2
+url : /api/board/post/delete/2
 request : Post(게시글 객체), 게시글번호
 response : 비밀번호가 맞으면 삭제후 삭제되었습니다. 맞지않으면 삭제하지않고 
 비밀번호가 맞지않는다 표시 
+
+
+
+- 추가 과제 Spring lv2.  2023/06/20 이후 
+6. 회원가입 
+Method : Post
+url : /api/auth/signup
+request : username(사용자명), password(비밀번호), isAdmin(관리자여부)
+response : DB에 중복된 username이 없다면 회원을 저장하고 Client 로 성공했다는 메시지, 상태코드 반환
+7. 로그인 
+Method : Post
+url : /api/auth/login
+request : username(사용자명), password(비밀번호)
+response : 로그인 성공 시, 로그인에 성공한 유저의 정보와 JWT를 활용하여 토큰을 발급하고, 
+발급한 토큰을 Header에 추가하고 성공했다는 메시지, 상태코드 와 함께 Client에 반환
+8. 게시글 작성
+Method : Post
+url : /api/board/post
+request : title, content
+response : 저장된 게시글을 Client 로 반환
+Request Header : Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiaW4xMjM0IiwiZXhwIjoxNjY5ODcwNDUyLCJpYXQiOjE2Njk4NjY4NTJ9.mm8wgaV8M70hidhPX4Ut6UONZGaxjA1KnOJT1mO59Xc 
+9. 게시글 목록 조회 
+Method : Get
+url : /api/board/posts
+request :
+response : 게시글 반환
+10. 게시글 상세 조회 
+Method : Get
+url : /api/board/post/{id}
+request : 글id 
+response : 글id에 해당하는 게시글 반환
+11. 게시글 상세 조회 
+Method : Put
+url : /api/board/post/{id}
+request : title, content, password, token
+response : 저장된 게시글을 Client 로 반환
+Request Header : Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiaW4xMjM0IiwiZXhwIjoxNjY5ODcwNDUyLCJpYXQiOjE2Njk4NjY4NTJ9.mm8wgaV8M70hidhPX4Ut6UONZGaxjA1KnOJT1mO59Xc 
+12. 게시글 삭제 
+Method : Delete 
+url : /api/board/post/{id}
+request : id, password, token
+response : 삭제 메시지 호출
+Request Header : Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiaW4xMjM0IiwiZXhwIjoxNjY5ODcwNDUyLCJpYXQiOjE2Njk4NjY4NTJ9.mm8wgaV8M70hidhPX4Ut6UONZGaxjA1KnOJT1mO59Xc 
+

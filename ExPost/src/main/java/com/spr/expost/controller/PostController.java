@@ -1,4 +1,4 @@
-package com.spr.expost;
+package com.spr.expost.controller;
 
 import com.spr.expost.dto.PostDto;
 import com.spr.expost.service.PostService;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/board")
+@RequestMapping("/api/board")
 public class PostController {
     private PostService postService;
 
