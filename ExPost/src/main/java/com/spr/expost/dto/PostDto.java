@@ -1,5 +1,6 @@
 package com.spr.expost.dto;
 
+import com.spr.expost.vo.Comment;
 import com.spr.expost.vo.Post;
 import lombok.*;
 
@@ -20,6 +21,7 @@ public class PostDto {
     private String postPassword;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
+    private List<Comment> comments;
 
     public Post toEntity() {
         Post build = Post.builder()
@@ -43,7 +45,7 @@ public class PostDto {
     }
 
     @Builder
-    public PostDto(Long postNo, String title, String content, String author, String postPassword,LocalDateTime createDate, LocalDateTime updateDate) {
+    public PostDto(Long postNo, String title, String content, String author, String postPassword,LocalDateTime createDate, LocalDateTime updateDate, List<Comment> comments) {
         this.postNo = postNo;
         this.author = author;
         this.postPassword = postPassword;
@@ -51,6 +53,7 @@ public class PostDto {
         this.content = content;
         this.createDate = createDate;
         this.updateDate = updateDate;
+        this.comments = comments;
     }
 
     // 등록
@@ -83,6 +86,7 @@ public class PostDto {
     //상세내용 표시
     public String toViewString(PostDto dto) {
         String nowDate = "";
+        StringBuilder sb = new StringBuilder();
 
         try {
             // 수정일자가 있으면 수정일자 우선출력
@@ -91,12 +95,22 @@ public class PostDto {
             } else {
                 nowDate =  dto.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             }
-            return "상세정보 {" +
+            sb.append("상세정보 {" +
                     "제목='" + dto.getTitle() + '\'' +
                     ", 작성자명='" + dto.getAuthor() + '\'' +
                     ", 작성내용='" + dto.getContent() + '\'' +
                     ", 작성날짜=" + nowDate +
-                    '}';
+                    '}');
+            // 게시글에 따라 댓글 조회
+            if (dto.comments!= null && !dto.comments.isEmpty()) {
+               for (int i = 0 ; i < dto.comments.size(); i ++) {
+                   sb.append("\n");
+                   sb.append("댓글 :" + dto.comments.get(i).getComment() + " ");
+                   sb.append("작성일시 :" + dto.comments.get(i).getUpdateDate() + " ");
+                   sb.append("작성자 :" + dto.comments.get(i).getUser().getUsername() + " ");
+               }
+            }
+            return sb.toString();
         } catch (NullPointerException ex) {
             System.out.println("필수값입력이 누락되었습니다. 관리자에게 문의하여 주세요.");
         }

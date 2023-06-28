@@ -50,13 +50,17 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String token = jwtUtil.createToken(username, role);
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
-        response.getWriter().println(" 로그인을 성공하였습니다." + " (상태코드 : " + response.getStatus() + ")");
+        response.getWriter().println(" 로그인을 성공하였습니다." + " (상태코드 : "
+                + response.getStatus()
+                + ")"
+                + "\n token : " + token
+        );
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
-        response.setStatus(401);
-        response.getWriter().println(" 로그인에 실패하였습니다." + " (상태코드 : " + response.getStatus() + ")");
+        response.setStatus(400);
+        response.getWriter().println(" 회원을 찾을 수 없습니다." + " (상태코드 : " + response.getStatus() + ")");
     }
 
 }

@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.util.List;
+
 // 게시글
 @Getter
 @Entity
@@ -31,6 +33,10 @@ public class Post extends Timestamped{
 
     @Column(length = 255, nullable = false)
     private String postPassword;
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OrderBy("id asc") // 댓글 정렬
+    private List<Comment> comments;
 
 
     @Builder

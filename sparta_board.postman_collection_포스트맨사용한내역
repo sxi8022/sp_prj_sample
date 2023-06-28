@@ -9,11 +9,21 @@
 		{
 			"name": "insert",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzb2JpIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE2ODc5NTU1MDUsImlhdCI6MTY4Nzk1MTkwNX0.H-GLs0yUaBPKF8bg_luaeNiERzLUspULj0_AyUasik0",
+							"type": "string"
+						}
+					]
+				},
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"author\": \"태훈킴15\",\r\n    \"title\": \"테스트15등록\",\r\n    \"content\": \"테스트포스트맨완료입니다\",\r\n    \"postPassword\": \"ko2457#\"\r\n}",
+					"raw": "{\r\n    \"author\": \"테스트4\",\r\n    \"title\": \"테스트4제목\",\r\n    \"content\": \"테스트4내용\",\r\n    \"postPassword\": \"ko2457#\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -21,13 +31,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/board/post",
+					"raw": "http://localhost:8080/api/board/post",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
+						"api",
 						"board",
 						"post"
 					]
@@ -38,11 +49,21 @@
 		{
 			"name": "update",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzb2JpIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE2ODc5NTU1MDUsImlhdCI6MTY4Nzk1MTkwNX0.H-GLs0yUaBPKF8bg_luaeNiERzLUspULj0_AyUasik0",
+							"type": "string"
+						}
+					]
+				},
 				"method": "PUT",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"author\": \"태훈킴13수정11\",\r\n    \"title\": \"테스트10등록수정11\",\r\n    \"content\": \"테스트포스트맨완료입니다!\",\r\n    \"postPassword\": \"ko2457#\"\r\n}",
+					"raw": "{\r\n    \"author\": \"테스트수정최신\",\r\n    \"title\": \"테스트1수정_최신\",\r\n    \"content\": \"테스트포스트맨완료입니다!\",\r\n    \"postPassword\": \"ko2457#\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -50,17 +71,18 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/board/post/update/16",
+					"raw": "http://localhost:8080/api/board/post/update/4",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
+						"api",
 						"board",
 						"post",
 						"update",
-						"16"
+						"4"
 					]
 				}
 			},
@@ -69,6 +91,16 @@
 		{
 			"name": "delete",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzb2JpIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE2ODc5NDk3NTUsImlhdCI6MTY4Nzk0NjE1NX0.W3Iqiv_C8aJQO9jiumyLMEtDK11XxzCKgoVEYyZ5b_g",
+							"type": "string"
+						}
+					]
+				},
 				"method": "DELETE",
 				"header": [],
 				"body": {
@@ -88,17 +120,18 @@
 					]
 				},
 				"url": {
-					"raw": "http://localhost:8080/board/post/delete/20",
+					"raw": "http://localhost:8080/api/board/post/delete/3",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
+						"api",
 						"board",
 						"post",
 						"delete",
-						"20"
+						"3"
 					]
 				}
 			},
@@ -107,16 +140,27 @@
 		{
 			"name": "list",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzb2JpIiwiYXV0aCI6IlVTAVIiLCJleHAiOjE2ODc5NTY2NDcsImlhdCI6MTY4Nzk1MzA0N30.zONIpX3mteS8vYsraJMHbeHbN_UlLx2izxwouTVQL3Y\\",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/board/postlist",
+					"raw": "http://localhost:8080/api/board/postlist",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
+						"api",
 						"board",
 						"postlist"
 					]
@@ -127,19 +171,211 @@
 		{
 			"name": "get",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzb2JpIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE2ODc5NTM4MTAsImlhdCI6MTY4Nzk1MDIxMH0.Qw1UyoPWEeOE8KAFGU25UcwGfXtpDHn9XxBS3M1WvG8",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/board/post/5",
+					"raw": "http://localhost:8080/api/board/post/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
+						"api",
 						"board",
 						"post",
-						"5"
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "signup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"buyer@gmail.com\",\r\n    \"password\": \"buyer9854#\",\r\n    \"admin\": \"false\",\r\n    \"username\":\"buyer\",\r\n    \"adminToken\":\"7YOc7ZuI64uY7J2YIOq0gOumrOyekCDsvZTrk5zsnoXri4jri6QuIOy3qOq4ieyXkCDso7zsnZjtlZjsl6wg7KO87IS47JqULg==\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/user/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"user",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\" : \"buyer\",\r\n    \"password\" : \"buyer9854#\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/user/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"user",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "commentSave",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJidXllciIsImF1dGgiOiJVU0VSIiwiZXhwIjoxNjg3OTU3OTM2LCJpYXQiOjE2ODc5NTQzMzZ9.KTQSfFUlJbhGhQuv6jSGuHjwvog0w340ruOeSQ6CMJY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"comment\": \"댓글_new\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/board/post/1/comment",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"board",
+						"post",
+						"1",
+						"comment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "commentUpdate",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzb2JpIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE2ODc5NDk0MDcsImlhdCI6MTY4Nzk0NTgwN30.Jjx6hNAIMzQk7OHWfDbDEozrfsV_9rK6JsGF-JaPoZs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"comment\": \"댓글수정사용자\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/board/post/comment/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"board",
+						"post",
+						"comment",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "commentDelete",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzb2JpIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE2ODc5NDk3NTUsImlhdCI6MTY4Nzk0NjE1NX0.W3Iqiv_C8aJQO9jiumyLMEtDK11XxzCKgoVEYyZ5b_g",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/board/post/comment/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"board",
+						"post",
+						"comment",
+						"2"
 					]
 				}
 			},

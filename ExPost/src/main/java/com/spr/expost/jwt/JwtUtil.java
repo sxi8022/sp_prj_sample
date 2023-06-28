@@ -1,10 +1,15 @@
 package com.spr.expost.jwt;
 
+import com.spr.expost.exception.ExtException;
+import com.spr.expost.repository.UserRepository;
+import com.spr.expost.util.CommonErrorCode;
+import com.spr.expost.vo.User;
 import com.spr.expost.vo.UserRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -16,6 +21,7 @@ import java.util.Date;
 
 @Slf4j(topic = "JwtUtil")
 @Component
+@RequiredArgsConstructor
 public class JwtUtil {
     // Header KEY 값
     public static final String AUTHORIZATION_HEADER = "Authorization";
@@ -25,6 +31,8 @@ public class JwtUtil {
     public static final String BEARER_PREFIX = "Bearer ";
     // 토큰 만료시간
     private final long TOKEN_TIME = 60 * 60 * 1000L; // 60분
+
+    private final UserRepository userRepository;
 
     @Value("${jwt.secret.key}") // Base64 Encode 한 SecretKey
     private String secretKey;
@@ -80,5 +88,33 @@ public class JwtUtil {
     // 토큰에서 사용자 정보 가져오기
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+    }
+
+
+    /**
+     * Check token.
+     */
+    public User checkToken(HttpServletRequest request) {
+
+        String token = this.getJwtFromHeader(request);
+        Claims claims;
+
+        User userEntity = null;
+
+        if (token != null) {
+            if (this.validateToken(token)) {
+                // 토큰에서 사용자 정보 가져오기
+                claims = this.getUserInfoFromToken(token);
+
+            } else {
+                throw new ExtException(CommonErrorCode.INVALID_TOKEN, null);
+            }
+
+            // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
+            userEntity = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+                    () -> new ExtException(CommonErrorCode.NOT_FOUND_USER, null)
+            );
+        }
+        return userEntity;
     }
 }

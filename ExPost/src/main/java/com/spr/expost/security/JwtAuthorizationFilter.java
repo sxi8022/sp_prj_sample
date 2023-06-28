@@ -36,6 +36,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(tokenValue)) {
 
             if (!jwtUtil.validateToken(tokenValue)) {
+                res.setStatus(400);
+                res.getWriter().println(" 토큰이 유효하지 않습니다." + " (상태코드 : " + res.getStatus() + ")");
                 log.error("Token Error");
                 return;
             }

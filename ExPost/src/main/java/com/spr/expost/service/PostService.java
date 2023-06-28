@@ -1,7 +1,9 @@
 package com.spr.expost.service;
 
 import com.spr.expost.dto.PostDto;
+import com.spr.expost.repository.CommentRepository;
 import com.spr.expost.repository.PostRepository;
+import com.spr.expost.vo.Comment;
 import com.spr.expost.vo.Post;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Sort;
@@ -15,8 +17,11 @@ import java.util.Optional;
 public class PostService {
     private PostRepository postRepository;
 
-    public PostService(PostRepository postRepository) {
+    private CommentRepository commentRepository;
+
+    public PostService(PostRepository postRepository, CommentRepository commentRepository) {
         this.postRepository = postRepository;
+        this.commentRepository = commentRepository;
     }
 
     /*
@@ -73,6 +78,7 @@ public class PostService {
         PostDto postDto = null;
         if (postWrapper.isPresent()) {
            Post post = postWrapper.get();
+            List<Comment> commentList = commentRepository.findCommentsByPostOrderByCreateDateDesc(post);
 
             postDto = PostDto.builder()
                     .postNo(post.getPostNo())
@@ -82,6 +88,7 @@ public class PostService {
                     .postPassword(post.getPostPassword())
                     .createDate(post.getCreateDate())
                     .updateDate(post.getUpdateDate())
+                    .comments(commentList)
                     .build();
         }
 

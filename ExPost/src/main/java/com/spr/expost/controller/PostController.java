@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/*
+* 게시글
+* */
 @RestController
 @RequestMapping("/api/board")
 public class PostController {
