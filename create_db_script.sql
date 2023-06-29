@@ -3,6 +3,9 @@ create user 'guest'@'%' identified by 'board247#';
 grant all privileges on boarddb.* to 'guest'@'%';
 flush privileges;
 
+use boarddb;
+SELECT * FROM comment;
+
 
 use boarddb;
 

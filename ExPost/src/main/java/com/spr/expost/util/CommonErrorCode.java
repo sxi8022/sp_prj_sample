@@ -4,7 +4,7 @@ package com.spr.expost.util;
 import lombok.Getter;
 
 /**
- * HanghaeBlogErrorCode.
+ * 예외발생시 메시지 (spring Security 사용으로 인해 postman에서 보이지 않는 현상 있음)
  */
 @Getter
 public enum CommonErrorCode {

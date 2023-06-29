@@ -38,6 +38,8 @@ public class CommentController {
         CommentResponseDto responseDto = commentService.updateComment(commentRequestDto, id, request);
         if (responseDto.getId() > 0 && responseDto != null) {
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        } else if (responseDto.getId() == -2){
+            return new ResponseEntity<>(responseDto, HttpStatus.UNAUTHORIZED);
         } else {
             return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
         }
@@ -52,6 +54,8 @@ public class CommentController {
        int result = commentService.deleteComment(id, request);
        if (result > 0) {
            return new ResponseEntity<>("삭제를 성공하였습니다.", HttpStatus.OK);
+       } else if (result == -2) {
+           return new ResponseEntity<>("삭제하려는 댓글이 본인이 아니거나, 관리자가 아닙니다.", HttpStatus.UNAUTHORIZED);
        } else {
            return new ResponseEntity<>("삭제에 실패하였습니다.", HttpStatus.NOT_FOUND);
        }

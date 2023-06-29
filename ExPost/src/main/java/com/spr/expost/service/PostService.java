@@ -1,8 +1,10 @@
 package com.spr.expost.service;
 
 import com.spr.expost.dto.PostDto;
+import com.spr.expost.exception.ExtException;
 import com.spr.expost.repository.CommentRepository;
 import com.spr.expost.repository.PostRepository;
+import com.spr.expost.util.CommonErrorCode;
 import com.spr.expost.vo.Comment;
 import com.spr.expost.vo.Post;
 import jakarta.transaction.Transactional;
@@ -10,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,8 +39,31 @@ public class PostService {
     * 수정
     * */
     @Transactional
-    public Long updatePost(PostDto postDto) {
-        return postRepository.save(postDto.toUpdateEntity()).getPostNo();
+    public HashMap<String, String> updatePost(PostDto postDto) {
+        HashMap<String, String> map = new HashMap<>();
+        Long key;
+
+
+
+
+        key = postRepository.save(postDto.toUpdateEntity()).getPostNo();
+        map.put("key", String.valueOf(key));
+        postDto.setPostNo(postDto.getPostNo());
+        PostDto dto = new PostDto();
+        PostDto resultDto = this.getPost(key);
+        String result = dto.toViewString(resultDto);
+        map.put("result", result);
+        return map;
+    }
+
+
+    /**
+     *  댓글이 있는지 확인
+     */
+    private Post checkValidPost(Long postNo) {
+        return postRepository.findById(postNo).orElseThrow(
+                () -> new ExtException(CommonErrorCode.NOT_FOUND_POST, null)
+        );
     }
 
     /*

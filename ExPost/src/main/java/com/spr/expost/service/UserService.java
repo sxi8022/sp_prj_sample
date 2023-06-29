@@ -21,6 +21,9 @@ public class UserService {
     private final String ADMIN_TOKEN = "7YOc7ZuI64uY7J2YIOq0gOumrOyekCDsvZTrk5zsnoXri4jri6QuIOy3qOq4ieyXkCDso7zsnZjtlZjsl6wg7KO87IS47JqULg==";
 
 
+    /*
+    * 회원가입
+    * */
     public HashMap<String, Object> signup(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();
         String password = passwordEncoder.encode(requestDto.getPassword());
@@ -48,7 +51,7 @@ public class UserService {
         if (requestDto.isAdmin()) {
             if (!ADMIN_TOKEN.equals(requestDto.getAdminToken())) {
                 map.put("응답코드", 401);
-                map.put("메시지", "중관리자 암호가 틀려 등록이 불가능합니다.");
+                map.put("메시지", "관리자 암호가 틀려 등록이 불가능합니다.");
                 return map;
             }
             role = UserRoleEnum.ADMIN;

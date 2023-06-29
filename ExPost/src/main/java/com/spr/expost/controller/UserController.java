@@ -17,7 +17,9 @@ public class UserController {
 
     private final UserService userService;
 
-    // 회원가입
+    /*
+     * 회원 가입
+     * */
     @PostMapping("/user/signup")
     @ResponseBody
     public HashMap<String, Object> signup(@RequestBody @Valid SignupRequestDto signupRequestDto){

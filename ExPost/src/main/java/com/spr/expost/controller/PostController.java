@@ -2,8 +2,10 @@ package com.spr.expost.controller;
 
 import com.spr.expost.dto.PostDto;
 import com.spr.expost.service.PostService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 /*
@@ -18,6 +20,9 @@ public class PostController {
         this.postService = postService;
     }
 
+    /*
+     * 조회
+     * */
     @GetMapping("/postlist")
     @ResponseBody
     public String list() {
@@ -32,6 +37,9 @@ public class PostController {
         return sb;
     }
 
+    /*
+    * 상세 조회
+    * */
     @GetMapping("/post/{postNo}")
     @ResponseBody
     public String view(@PathVariable("postNo") Long postNo) {
@@ -44,7 +52,7 @@ public class PostController {
     * 등록
     * */
     @PostMapping("/post")
-    public String write(@RequestBody PostDto postDto) {
+    public String write(@RequestBody @Valid PostDto postDto) {
         PostDto dto = new PostDto();
         Long key =postService.savePost(postDto);
         PostDto resultDto = postService.getPost(key);
@@ -56,21 +64,22 @@ public class PostController {
      * 수정
      * */
     @PutMapping("/post/update/{postNo}")
-    public String update(@PathVariable("postNo") Long postNo, @RequestBody  PostDto postDto) {
+    public String update(@PathVariable("postNo") Long postNo, @RequestBody @Valid PostDto postDto) {
         PostDto origin = postService.getPost(postNo);
         String result = "";
-        if (origin != null) {
-            if(origin.getPostPassword().equals(postDto.getPostPassword())) {
-                postDto.setPostNo(postNo);
-                PostDto dto = new PostDto();
-                Long key = postService.updatePost(postDto);
-                PostDto resultDto = postService.getPost(key);
-                result = dto.toViewString(resultDto);
-            } else {
-                result = "비밀번호가 올바르지 않습니다.";
-            }
-        } else {
+        HashMap<String, String> resultMap = new HashMap<>();
+
+        if (origin == null) {
             result = "수정할 게시글이 존재하지 않습니다.";
+            return result;
+        }
+
+        if (checkPassword(origin.getPostPassword(), postDto.getPostPassword())) {
+            postDto.setPostNo(postNo);
+            resultMap = postService.updatePost(postDto);
+            result = resultMap.get("result");
+        } else {
+            result = "비밀번호가 올바르지 않습니다.";
         }
 
         return result;
@@ -83,18 +92,28 @@ public class PostController {
     public String delete(@PathVariable("postNo") Long postNo, String password) {
         PostDto origin = postService.getPost(postNo);
         String result = "";
-        if (origin != null) {
-            if (origin.getPostPassword().equals(password)) {
-                postService.deletePost(postNo);
-                result = "게시글을 삭제하였습니다.";
-            } else {
-                result = "비밀번호가 올바르지 않습니다.";
-            }
-        } else {
-            result = "수정할 게시글이 존재하지 않습니다.";
+
+        if (origin == null) {
+            result = "삭제할 게시글이 존재하지 않습니다.";
+            return result;
         }
 
+        if (checkPassword(origin.getPostPassword(), password)) {
+            postService.deletePost(postNo);
+            result = "게시글을 삭제하였습니다.";
+        } else {
+            result = "비밀번호가 올바르지 않습니다.";
+        }
         return result;
     }
-    
+
+    /**패스워드 체크
+     *
+     * */
+    public boolean checkPassword(String originPassword, String newPassword) {
+        if (originPassword.equals(newPassword)) {
+            return true;
+        }
+        return false;
+    }
 }

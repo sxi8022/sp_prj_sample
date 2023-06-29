@@ -68,7 +68,7 @@ public class CommentService {
         /*
         * 게시글 있는지 확인
         * */
-        Post post = postsRepository.findById(id).orElseThrow(() ->
+        Post post = postsRepository.findById(comment.getPost().getPostNo()).orElseThrow(() ->
                 new IllegalArgumentException("댓글 쓰기 실패: 해당 게시글이 존재하지 않습니다." + id));
 
         dto.setUser(user);
@@ -76,15 +76,18 @@ public class CommentService {
         dto.setId(comment.getId());
 
         Comment newComment = dto.toUpdateEntity();
+        CommentResponseDto responseDto;
         /*
          * 수정하려고 하는 댓글의 작성자가 본인인지, 관리자 계정으로 수정하려고 하는지 확인.
+         *  checkValid 결과 true 면 데이터리턴 아니면 예외 발생
          */
         if (this.checkValidUser(user, comment)) {
-            throw new ExtException(CommonErrorCode.UNAUTHORIZED_USER, null);
+            responseDto = new CommentResponseDto(commentRepository.save(newComment));
+            responseDto.setCreateDate(createDate);
+        } else {
+            responseDto = new CommentResponseDto(new Comment((long) -2, "수정하려는 댓글이 본인이 아니거나, 관리자가 아닙니다.", post, user));
+            // throw new ExtException(CommonErrorCode.UNAUTHORIZED_USER, null);
         }
-
-        CommentResponseDto responseDto = new CommentResponseDto(commentRepository.save(newComment));
-        responseDto.setCreateDate(createDate);
         return responseDto;
     }
 
@@ -102,7 +105,7 @@ public class CommentService {
      * 유효한 등록자인지 확인
      */
     private boolean checkValidUser(User user, Comment comment) {
-        return (
+        return !(
                 !user.getUsername().equals(comment.getUser().getUsername())
                 && !user.getRole().equals(UserRoleEnum.ADMIN)
         );
@@ -122,14 +125,18 @@ public class CommentService {
          */
         Optional<Comment> opComment = commentRepository.findById(id);
         if (opComment.isPresent()) {
+
             /*
              * 삭제하려고 하는 댓글의 작성자가 본인인지, 관리자 계정으로 수정하려고 하는지 확인.
+             *  checkValid 결과 true 면 데이터리턴 아니면 예외 발생
              */
             if (this.checkValidUser(user, opComment.get())) {
-                throw new ExtException(CommonErrorCode.UNAUTHORIZED_USER, null);
+                commentRepository.delete(opComment.get());
+                return 1;
+            } else {
+                return -2;
+                // throw new ExtException(CommonErrorCode.UNAUTHORIZED_USER, null);
             }
-            commentRepository.delete(opComment.get());
-            return 1;
         }
         return 0;
     }

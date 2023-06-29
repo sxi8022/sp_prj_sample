@@ -3,6 +3,7 @@ package com.spr.expost.dto;
 import com.spr.expost.vo.Comment;
 import com.spr.expost.vo.Post;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,9 +16,12 @@ import java.util.List;
 @NoArgsConstructor
 public class PostDto {
     private Long postNo;
+    @Length(max = 100, message = "제목은 100자 이하여야합니다.")
     private String title;
     private String content;
+    @Length(max = 10, message = "작성자는 10자 이하여야합니다.")
     private String author;
+    @Length(max = 255, message = "비밀번호는 255자 이하여야합니다.")
     private String postPassword;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
