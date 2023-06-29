@@ -23,7 +23,7 @@ response : 로그인 성공 시, 로그인에 성공한 유저의 정보와 JWT�
 3. 게시글 작성
 Method : Post
 url : /api/board/post
-request : title, content
+request : title, content, HttpServletRequest
 response : 저장된 게시글을 Client 로 반환
 Request Header : Authorization: Bearer "토큰값" 
 
@@ -44,14 +44,14 @@ Request Header : Authorization: Bearer "토큰값"
 6. 게시글 수정
 Method : Put
 url : /api/board/post/{id}
-request : title, content, password, token
+request : title, content, password, token, HttpServletRequest
 response : 저장된 게시글을 Client 로 반환
 Request Header : Authorization: Bearer "토큰값" 
 
 7. 게시글 삭제 
 Method : Delete 
 url : /api/board/post/{id}
-request : id, password, token
+request : id, password, token, HttpServletRequest
 response : 삭제 메시지 호출
 Request Header : Authorization: Bearer "토큰값"
 
