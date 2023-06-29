@@ -22,8 +22,10 @@ public class Post extends Timestamped{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postNo;
 
+/*
     @Column(length = 10, nullable = false)
     private String author;
+*/
 
     @Column(length = 100, nullable = false)
     private String title;
@@ -38,14 +40,19 @@ public class Post extends Timestamped{
     @OrderBy("id asc") // 댓글 정렬
     private List<Comment> comments;
 
+    // 관리자 사용자 접근권한 때문에 작성자는 업데이트 하지 않음
+    @ManyToOne
+    @JoinColumn(name = "user_id", updatable=false)
+    private User user; // 작성자
+
 
     @Builder
-    public Post(Long postNo,String title, String content,  String author, String postPassword) {
+    public Post(Long postNo,String title, String content, String postPassword, User user) {
         this.postNo = postNo;
-        this.author = author;
         this.title = title;
         this.content = content;
         this.postPassword = postPassword;
+        this.user = user;
     }
 
     public void setPostNo(Long postNo) {

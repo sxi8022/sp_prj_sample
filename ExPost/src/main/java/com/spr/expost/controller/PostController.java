@@ -2,6 +2,7 @@ package com.spr.expost.controller;
 
 import com.spr.expost.dto.PostDto;
 import com.spr.expost.service.PostService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,9 +53,9 @@ public class PostController {
     * 등록
     * */
     @PostMapping("/post")
-    public String write(@RequestBody @Valid PostDto postDto) {
+    public String write(@RequestBody @Valid PostDto postDto, HttpServletRequest request) {
         PostDto dto = new PostDto();
-        Long key =postService.savePost(postDto);
+        Long key =postService.savePost(postDto, request);
         PostDto resultDto = postService.getPost(key);
         String result = dto.toViewString(resultDto);
         return result;
@@ -64,7 +65,7 @@ public class PostController {
      * 수정
      * */
     @PutMapping("/post/update/{postNo}")
-    public String update(@PathVariable("postNo") Long postNo, @RequestBody @Valid PostDto postDto) {
+    public String update(@PathVariable("postNo") Long postNo, @RequestBody @Valid PostDto postDto, HttpServletRequest request) {
         PostDto origin = postService.getPost(postNo);
         String result = "";
         HashMap<String, String> resultMap = new HashMap<>();
@@ -76,7 +77,7 @@ public class PostController {
 
         if (checkPassword(origin.getPostPassword(), postDto.getPostPassword())) {
             postDto.setPostNo(postNo);
-            resultMap = postService.updatePost(postDto);
+            resultMap = postService.updatePost(postDto, request);
             result = resultMap.get("result");
         } else {
             result = "비밀번호가 올바르지 않습니다.";
@@ -89,7 +90,7 @@ public class PostController {
     * 삭제
     * */
     @DeleteMapping("/post/delete/{postNo}")
-    public String delete(@PathVariable("postNo") Long postNo, String password) {
+    public String delete(@PathVariable("postNo") Long postNo, String password, HttpServletRequest request) {
         PostDto origin = postService.getPost(postNo);
         String result = "";
 
@@ -97,10 +98,16 @@ public class PostController {
             result = "삭제할 게시글이 존재하지 않습니다.";
             return result;
         }
-
+        int deleteResult = 0;
         if (checkPassword(origin.getPostPassword(), password)) {
-            postService.deletePost(postNo);
-            result = "게시글을 삭제하였습니다.";
+            deleteResult = postService.deletePost(postNo, request);
+            if (deleteResult > 0) {
+                result = "게시글을 삭제하였습니다.";
+            } else if (deleteResult == -2) {
+                result = "삭제하려는 게시글이 본인이 아니거나, 관리자가 아닙니다.";
+            }  else {
+                result = "삭제되지 않았습니다.";
+            }
         } else {
             result = "비밀번호가 올바르지 않습니다.";
         }

@@ -21,7 +21,7 @@ public class CommentController {
     /* 댓글 생성  */
     // id는 게시글 id
     @PostMapping("/post/{id}/comment")
-    public ResponseEntity<CommentResponseDto> commentSave(@PathVariable Long id, @RequestBody CommentRequestDto dto,  HttpServletRequest request) {
+    public ResponseEntity<CommentResponseDto> commentSave(@PathVariable Long id, @RequestBody CommentRequestDto dto, HttpServletRequest request) {
         CommentResponseDto responseDto = commentService.commentSave(id, dto, request);
         if (responseDto.getId() > 0 && responseDto != null) {
             return new ResponseEntity<>(responseDto, HttpStatus.OK);

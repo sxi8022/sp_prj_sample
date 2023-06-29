@@ -2,6 +2,7 @@ package com.spr.expost.dto;
 
 import com.spr.expost.vo.Comment;
 import com.spr.expost.vo.Post;
+import com.spr.expost.vo.User;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
@@ -19,20 +20,23 @@ public class PostDto {
     @Length(max = 100, message = "제목은 100자 이하여야합니다.")
     private String title;
     private String content;
-    @Length(max = 10, message = "작성자는 10자 이하여야합니다.")
-    private String author;
+/*    @Length(max = 10, message = "작성자는 10자 이하여야합니다.")
+    private String author;*/
     @Length(max = 255, message = "비밀번호는 255자 이하여야합니다.")
     private String postPassword;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
     private List<Comment> comments;
 
+    private User user;
+
     public Post toEntity() {
         Post build = Post.builder()
-                .author(author)
+                //.author(author)
                 .title(title)
                 .content(content)
                 .postPassword(postPassword)
+                .user(user)
                 .build();
         return build;
     }
@@ -40,29 +44,29 @@ public class PostDto {
     public Post toUpdateEntity() {
         Post build = Post.builder()
                 .postNo(postNo)
-                .author(author)
+                //.author(author)
                 .title(title)
                 .content(content)
                 .postPassword(postPassword)
+                .user(user)
                 .build();
         return build;
     }
 
     @Builder
-    public PostDto(Long postNo, String title, String content, String author, String postPassword,LocalDateTime createDate, LocalDateTime updateDate, List<Comment> comments) {
+    public PostDto(Long postNo, String title, String content, String postPassword, User user, LocalDateTime createDate, LocalDateTime updateDate, List<Comment> comments) {
         this.postNo = postNo;
-        this.author = author;
         this.postPassword = postPassword;
         this.title = title;
         this.content = content;
         this.createDate = createDate;
         this.updateDate = updateDate;
         this.comments = comments;
+        this.user = user;
     }
 
     // 등록
-    public PostDto(String title, String content, String author, String postPassword) {
-        this.author = author;
+    public PostDto(String title, String content, User user, String postPassword) {
         this.postPassword = postPassword;
         this.title = title;
         this.content = content;
@@ -76,7 +80,7 @@ public class PostDto {
                    "글번호 = " + dtoList.get(i).getPostNo()
                      + " {" +
                             "제목='" + dtoList.get(i).getTitle() + '\'' +
-                            ", 작성자명='" + dtoList.get(i).getAuthor() + '\'' +
+                            ", 작성자명='" + dtoList.get(i).getUser().getUsername() + '\'' +
                             ", 작성내용='" + dtoList.get(i).getContent() + '\'' +
                             ", 작성날짜=" + dtoList.get(i).getCreateDate() +
                             '}'
@@ -101,7 +105,7 @@ public class PostDto {
             }
             sb.append("상세정보 {" +
                     "제목='" + dto.getTitle() + '\'' +
-                    ", 작성자명='" + dto.getAuthor() + '\'' +
+                    ", 작성자명='" + dto.getUser().getUsername() + '\'' +
                     ", 작성내용='" + dto.getContent() + '\'' +
                     ", 작성날짜=" + nowDate +
                     '}');

@@ -3,6 +3,8 @@ package com.spr.expost.board;
 import com.spr.expost.dto.PostDto;
 import com.spr.expost.repository.PostRepository;
 import com.spr.expost.vo.Post;
+import com.spr.expost.vo.User;
+import com.spr.expost.vo.UserRoleEnum;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -10,7 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @SpringBootTest
 public class BoardTest {
@@ -29,7 +34,7 @@ public class BoardTest {
         for(Post post : postList) {
             PostDto postDto = PostDto.builder()
                     .postNo(post.getPostNo())
-                    .author(post.getAuthor())
+                    .user(post.getUser())
                     .title(post.getTitle())
                     .content(post.getContent())
                     .createDate(post.getCreateDate())
@@ -54,7 +59,7 @@ public class BoardTest {
                 .postNo(post.getPostNo())
                 .title(post.getTitle())
                 .content(post.getContent())
-                .author(post.getAuthor())
+                .user(post.getUser())
                 .postPassword(post.getPostPassword())
                 .createDate(post.getCreateDate())
                 .updateDate(post.getUpdateDate())
@@ -74,10 +79,12 @@ public class BoardTest {
         String uuid = UUID.randomUUID().toString().substring(0,11);
         String title = "제목 " + uuid;
         String content = "내용 " + uuid ;
-        String author = "작성자" + ((int)(Math.random()*100) + 1);
+        //String author = "작성자" + ((int)(Math.random()*100) + 1);
         String postPassword = "ko2457#";
 
-        PostDto post = new PostDto(title, content, author, postPassword);
+        User user = new User("1","test", "test", UserRoleEnum.USER);
+
+        PostDto post = new PostDto(title, content, user, postPassword);
         Post data = postRepository.save(post.toEntity());
         Long dataKey = data.getPostNo();
         System.out.println("결과값은 " + dataKey);
