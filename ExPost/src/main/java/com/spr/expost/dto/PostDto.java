@@ -1,7 +1,6 @@
 package com.spr.expost.dto;
 
 import com.spr.expost.vo.Comment;
-import com.spr.expost.vo.Post;
 import com.spr.expost.vo.User;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
@@ -22,8 +21,8 @@ public class PostDto {
     private String content;
 /*    @Length(max = 10, message = "작성자는 10자 이하여야합니다.")
     private String author;*/
-    @Length(max = 255, message = "비밀번호는 255자 이하여야합니다.")
-    private String postPassword;
+    // @Length(max = 255, message = "비밀번호는 255자 이하여야합니다.")
+    //private String postPassword;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
     private List<Comment> comments;
@@ -33,37 +32,9 @@ public class PostDto {
     private Integer likeCount; //좋아요
     private Integer viewCount; // 조회수
 
-    public Post toEntity() {
-        Post build = Post.builder()
-                //.author(author)
-                .title(title)
-                .content(content)
-                .postPassword(postPassword)
-                .user(user)
-                .likeCount(likeCount)
-                .viewCount(viewCount)
-                .build();
-        return build;
-    }
-
-    public Post toUpdateEntity() {
-        Post build = Post.builder()
-                .id(id)
-                //.author(author)
-                .title(title)
-                .content(content)
-                .postPassword(postPassword)
-                .likeCount(likeCount)
-                .viewCount(viewCount)
-                .user(user)
-                .build();
-        return build;
-    }
-
     @Builder
-    public PostDto(Long id, String title, String content, String postPassword, User user, LocalDateTime createDate, LocalDateTime updateDate, List<Comment> comments, int likeCount, int viewCount) {
+    public PostDto(Long id, String title, String content, User user, LocalDateTime createDate, LocalDateTime updateDate, List<Comment> comments, int likeCount, int viewCount) {
         this.id = id;
-        this.postPassword = postPassword;
         this.title = title;
         this.content = content;
         this.createDate = createDate;
@@ -75,8 +46,7 @@ public class PostDto {
     }
 
     // 등록
-    public PostDto(String title, String content, User user, String postPassword) {
-        this.postPassword = postPassword;
+    public PostDto(String title, String content, User user) {
         this.title = title;
         this.content = content;
     }

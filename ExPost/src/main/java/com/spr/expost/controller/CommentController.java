@@ -21,7 +21,7 @@ public class CommentController {
 
     /* 댓글 생성  */
     // id는 게시글 id
-    @PostMapping("/post/{id}/comment")
+    @PostMapping("/posts/{id}/comments")
     public ResponseEntity<CommentResponseDto> commentSave(@PathVariable Long id, @RequestBody CommentRequestDto dto, HttpServletRequest request) {
         CommentResponseDto responseDto = commentService.commentSave(id, dto, request);
         if (responseDto.getId() > 0 && responseDto != null) {
@@ -34,7 +34,7 @@ public class CommentController {
     /**
      *  댓글 수정
      */
-    @PutMapping("/post/comment/{id}")
+    @PutMapping("/posts/comments/{id}")
     public ResponseEntity<CommentResponseDto> updateComment(@PathVariable Long id, @RequestBody CommentRequestDto commentRequestDto, HttpServletRequest request) {
         CommentResponseDto responseDto = commentService.updateComment(commentRequestDto, id, request);
         if (responseDto.getId() > 0 && responseDto != null) {
@@ -50,7 +50,7 @@ public class CommentController {
     /**
      *  댓글 삭제
      */
-    @DeleteMapping("/post/comment/{id}")
+    @DeleteMapping("/posts/comments/{id}")
     public ApiResponseDto deleteComment(@PathVariable Long id, HttpServletRequest request) {
         ApiResponseDto result = commentService.deleteComment(id, request);
         return result;

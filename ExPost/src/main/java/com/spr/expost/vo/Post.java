@@ -34,8 +34,11 @@ public class Post extends Timestamped{
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
+    /*
+    // 사용자 인증으로 대체
     @Column(length = 255, nullable = false)
     private String postPassword;
+    */
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @OrderBy("id asc") // 댓글 정렬
@@ -56,11 +59,11 @@ public class Post extends Timestamped{
 
 
     @Builder
-    public Post(Long id,String title, String content, String postPassword, User user, int likeCount, int viewCount) {
+    public Post(Long id,String title, String content, User user, int likeCount, int viewCount) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.postPassword = postPassword;
+        // this.postPassword = postPassword;
         this.user = user;
         this.likeCount = likeCount;
         this.viewCount = viewCount;
