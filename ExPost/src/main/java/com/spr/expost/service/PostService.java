@@ -47,6 +47,8 @@ public class PostService {
             throw new ExtException(CommonErrorCode.NOT_FOUND_USER, null);
         }
         postDto.setUser(user);
+        postDto.setLikeCount(0); // 좋아요 최초 0
+        postDto.setViewCount(0); // 조회수 최초 0
 
         return postRepository.save(postDto.toEntity()).getId();
     }
@@ -58,7 +60,6 @@ public class PostService {
     public HashMap<String, String> updatePost(PostDto postDto, HttpServletRequest request) {
         HashMap<String, String> map = new HashMap<>();
         Long key;
-
         /*
          * 토큰 검증.
          */
@@ -69,7 +70,9 @@ public class PostService {
         postDto.setUser(user);
         // 원래 정보
         Post origin = this.checkValidPost(postDto.getId());
-
+        // 요청할때는 좋아요 조회수를 가져오지않으므로 DB 에서 확인
+        postDto.setLikeCount(origin.getLikeCount());
+        postDto.setViewCount(origin.getViewCount());
         /*
          * 수정하려고 하는 게시글의 작성자가 본인인지, 관리자 계정으로 수정하려고 하는지 확인.
          *  checkValid 결과 true 면 데이터리턴 아니면 예외 발생

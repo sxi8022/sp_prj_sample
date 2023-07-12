@@ -41,7 +41,7 @@ public class PostController {
     /*
     * 상세 조회
     * */
-    @GetMapping("/post/{id}")
+    @GetMapping("/posts/{id}")
     @ResponseBody
     public String view(@PathVariable("id") Long id) {
         PostDto dto = postService.getPost(id);
@@ -52,7 +52,7 @@ public class PostController {
     /*
     * 등록
     * */
-    @PostMapping("/post")
+    @PostMapping("/posts")
     public String write(@RequestBody @Valid PostDto postDto, HttpServletRequest request) {
         PostDto dto = new PostDto();
         Long key =postService.savePost(postDto, request);
@@ -64,7 +64,7 @@ public class PostController {
     /*
      * 수정
      * */
-    @PutMapping("/post/update/{id}")
+    @PutMapping("/posts/{id}")
     public String update(@PathVariable("id") Long id, @RequestBody @Valid PostDto postDto, HttpServletRequest request) {
         PostDto origin = postService.getPost(id);
         String result = "";
@@ -89,7 +89,7 @@ public class PostController {
     /*
     * 삭제
     * */
-    @DeleteMapping("/post/delete/{id}")
+    @DeleteMapping("/posts/{id}")
     public String delete(@PathVariable("id") Long id, String password, HttpServletRequest request) {
         PostDto origin = postService.getPost(id);
         String result = "";

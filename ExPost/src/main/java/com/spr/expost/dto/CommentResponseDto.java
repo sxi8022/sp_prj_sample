@@ -1,27 +1,20 @@
 package com.spr.expost.dto;
 
-import com.spr.expost.vo.Comment;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class CommentResponseDto {
 
     private Long id;
-    private String comment;
+    private String content;
     private String createDate;
     private String updateDate;
     private String username;
-    private Long postsId;
-
-    /* Entity -> Dto*/
-    public CommentResponseDto(Comment comment) {
-        this.id = comment.getId();
-        this.comment = comment.getContent();
-        this.createDate = String.valueOf(comment.getCreateDate());
-        this.updateDate = String.valueOf(comment.getUpdateDate());
-        this.username = comment.getUser().getUsername();
-        this.postsId = comment.getPost().getId();
-    }
+    private Long postId;
+    private String postTitle;
+    private int likeCount;
 
     public void setCreateDate(String createDate) {
         this.createDate = createDate;

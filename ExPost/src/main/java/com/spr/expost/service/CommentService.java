@@ -1,5 +1,7 @@
 package com.spr.expost.service;
 
+import com.spr.expost.dao.CommentDao;
+import com.spr.expost.dto.ApiResponseDto;
 import com.spr.expost.dto.CommentRequestDto;
 import com.spr.expost.dto.CommentResponseDto;
 import com.spr.expost.exception.ExtException;
@@ -14,6 +16,7 @@ import com.spr.expost.vo.User;
 import com.spr.expost.vo.UserRoleEnum;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,18 +45,23 @@ public class CommentService {
          * */
         Post post = postsRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("댓글 쓰기 실패: 해당 게시글이 존재하지 않습니다." + id));
+        // 선택한 게시글이 있다면 댓글을 등록하고 등록된 댓글 반환하기
+        // 댓글 저장
+        Comment comment = new Comment();
+        comment.setContent(dto.getContent());
+        comment.setUser(user);
+        comment.setPost(post);
+        comment.setLikeCount(0); // 처음에 좋아요는 0
 
-        dto.setUser(user);
-        dto.setPost(post);
-
-        Comment comment = dto.toEntity();
-        CommentResponseDto responseDto = new CommentResponseDto(commentRepository.save(comment));
+        Comment newComment = commentRepository.save(comment);
+        CommentDao dao = new CommentDao();
+        CommentResponseDto responseDto = dao.ConvertToDto(newComment);
 
         return responseDto;
     }
 
     // 댓글 수정
-    public CommentResponseDto updateComment(CommentRequestDto dto, Long id, HttpServletRequest request) {
+    public CommentResponseDto updateComment(CommentRequestDto requestDto, Long id, HttpServletRequest request) {
         /*
          * 토큰 검증.
          */
@@ -71,21 +79,22 @@ public class CommentService {
         Post post = postsRepository.findById(comment.getPost().getId()).orElseThrow(() ->
                 new IllegalArgumentException("댓글 쓰기 실패: 해당 게시글이 존재하지 않습니다." + id));
 
-        dto.setUser(user);
-        dto.setPost(post);
-        dto.setId(comment.getId());
-
-        Comment newComment = dto.toUpdateEntity();
         CommentResponseDto responseDto;
+        CommentDao dao = new CommentDao();
         /*
          * 수정하려고 하는 댓글의 작성자가 본인인지, 관리자 계정으로 수정하려고 하는지 확인.
          *  checkValid 결과 true 면 데이터리턴 아니면 예외 발생
          */
-        if (this.checkValidUser(user, comment)) {
-            responseDto = new CommentResponseDto(commentRepository.save(newComment));
+        if (this.checkValidUser(user, comment.getUser())) {
+            requestDto.setUser(user);
+            requestDto.setPost(post);
+            requestDto.setId(comment.getId());
+
+            Comment newComment = dao.toUpdateEntity(requestDto);
+            responseDto = dao.ConvertToDto(commentRepository.save(newComment));
             responseDto.setCreateDate(createDate);
         } else {
-            responseDto = new CommentResponseDto(new Comment((long) -2, "수정하려는 댓글이 본인이 아니거나, 관리자가 아닙니다.", post, user));
+            responseDto = dao.ConvertToDto(new Comment((long) -2, "수정하려는 댓글이 본인이 아니거나, 관리자가 아닙니다.", post, user, -1));
             // throw new ExtException(CommonErrorCode.UNAUTHORIZED_USER, null);
         }
         return responseDto;
@@ -104,9 +113,9 @@ public class CommentService {
     /**
      * 유효한 등록자인지 확인
      */
-    private boolean checkValidUser(User user, Comment comment) {
+    private boolean checkValidUser(User user, User commentUser) {
         return !(
-                !user.getUsername().equals(comment.getUser().getUsername())
+                !user.getUsername().equals(commentUser.getUsername())
                 && !user.getRole().equals(UserRoleEnum.ADMIN)
         );
     }
@@ -114,7 +123,7 @@ public class CommentService {
     /**
      * 댓글 삭제
      */
-    public int deleteComment(Long id, HttpServletRequest request) {
+    public ApiResponseDto deleteComment(Long id, HttpServletRequest request) {
         /*
          * 토큰 검증.
          */
@@ -124,20 +133,29 @@ public class CommentService {
          * 작성한 댓글이 존재하는지 확인.
          */
         Optional<Comment> opComment = commentRepository.findById(id);
-        if (opComment.isPresent()) {
 
+        if (opComment.isPresent()) {
             /*
              * 삭제하려고 하는 댓글의 작성자가 본인인지, 관리자 계정으로 수정하려고 하는지 확인.
              *  checkValid 결과 true 면 데이터리턴 아니면 예외 발생
              */
-            if (this.checkValidUser(user, opComment.get())) {
+            if (this.checkValidUser(user, opComment.get().getUser())) {
                 commentRepository.delete(opComment.get());
-                return 1;
+                return ApiResponseDto.builder()
+                        .msg("success")
+                        .statusCode(HttpStatus.OK.value())
+                        .build();
             } else {
-                return -2;
-                // throw new ExtException(CommonErrorCode.UNAUTHORIZED_USER, null);
+                return ApiResponseDto.builder()
+                        .msg("삭제하려는 댓글이 본인이 아니거나, 관리자가 아닙니다.")
+                        .statusCode(HttpStatus.UNAUTHORIZED.value())
+                        .build();
             }
+        } else {
+            return ApiResponseDto.builder()
+                    .msg("삭제하려는 댓글이 존재하지 않습니다.")
+                    .statusCode(HttpStatus.NOT_FOUND.value())
+                    .build();
         }
-        return 0;
     }
 }

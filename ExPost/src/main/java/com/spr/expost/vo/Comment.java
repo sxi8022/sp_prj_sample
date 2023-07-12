@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
@@ -35,6 +36,10 @@ public class Comment extends Timestamped {
     @JoinColumn(name = "user_id", updatable=false)
     private User user; // 작성자
 
+    @ColumnDefault("0")
+    @Column(name = "like_count", nullable = false)
+    private Integer likeCount;
+
     @Override
     public LocalDateTime getUpdateDate() {
         return super.getUpdateDate();
@@ -43,6 +48,24 @@ public class Comment extends Timestamped {
     @Override
     public LocalDateTime getCreateDate() {
         return super.getCreateDate();
+    }
+
+    // Setter
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setLikeCount(Integer likeCount) {
+        this.likeCount = likeCount;
     }
 }
 

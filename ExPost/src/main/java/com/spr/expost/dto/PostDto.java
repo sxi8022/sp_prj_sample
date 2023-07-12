@@ -30,6 +30,9 @@ public class PostDto {
 
     private User user;
 
+    private Integer likeCount; //좋아요
+    private Integer viewCount; // 조회수
+
     public Post toEntity() {
         Post build = Post.builder()
                 //.author(author)
@@ -37,6 +40,8 @@ public class PostDto {
                 .content(content)
                 .postPassword(postPassword)
                 .user(user)
+                .likeCount(likeCount)
+                .viewCount(viewCount)
                 .build();
         return build;
     }
@@ -48,13 +53,15 @@ public class PostDto {
                 .title(title)
                 .content(content)
                 .postPassword(postPassword)
+                .likeCount(likeCount)
+                .viewCount(viewCount)
                 .user(user)
                 .build();
         return build;
     }
 
     @Builder
-    public PostDto(Long id, String title, String content, String postPassword, User user, LocalDateTime createDate, LocalDateTime updateDate, List<Comment> comments) {
+    public PostDto(Long id, String title, String content, String postPassword, User user, LocalDateTime createDate, LocalDateTime updateDate, List<Comment> comments, int likeCount, int viewCount) {
         this.id = id;
         this.postPassword = postPassword;
         this.title = title;
@@ -63,6 +70,8 @@ public class PostDto {
         this.updateDate = updateDate;
         this.comments = comments;
         this.user = user;
+        this.likeCount =likeCount;
+        this.viewCount = viewCount;
     }
 
     // 등록

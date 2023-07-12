@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -45,14 +46,24 @@ public class Post extends Timestamped{
     @JoinColumn(name = "user_id", updatable=false)
     private User user; // 작성자
 
+    @ColumnDefault("0")
+    @Column(name = "like_count", nullable = false)
+    private Integer likeCount;
+
+    @ColumnDefault("0")
+    @Column(name = "view_count",nullable = false)
+    private Integer viewCount;
+
 
     @Builder
-    public Post(Long id,String title, String content, String postPassword, User user) {
+    public Post(Long id,String title, String content, String postPassword, User user, int likeCount, int viewCount) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.postPassword = postPassword;
         this.user = user;
+        this.likeCount = likeCount;
+        this.viewCount = viewCount;
     }
 
     public void setId(Long id) {

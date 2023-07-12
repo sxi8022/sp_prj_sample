@@ -1,5 +1,6 @@
 package com.spr.expost.controller;
 
+import com.spr.expost.dto.ApiResponseDto;
 import com.spr.expost.dto.CommentRequestDto;
 import com.spr.expost.dto.CommentResponseDto;
 import com.spr.expost.service.CommentService;
@@ -50,15 +51,9 @@ public class CommentController {
      *  댓글 삭제
      */
     @DeleteMapping("/post/comment/{id}")
-    public ResponseEntity<String> deleteComment(@PathVariable Long id, HttpServletRequest request) {
-       int result = commentService.deleteComment(id, request);
-       if (result > 0) {
-           return new ResponseEntity<>("삭제를 성공하였습니다.", HttpStatus.OK);
-       } else if (result == -2) {
-           return new ResponseEntity<>("삭제하려는 댓글이 본인이 아니거나, 관리자가 아닙니다.", HttpStatus.UNAUTHORIZED);
-       } else {
-           return new ResponseEntity<>("삭제에 실패하였습니다.", HttpStatus.NOT_FOUND);
-       }
+    public ApiResponseDto deleteComment(@PathVariable Long id, HttpServletRequest request) {
+        ApiResponseDto result = commentService.deleteComment(id, request);
+        return result;
     }
 
 

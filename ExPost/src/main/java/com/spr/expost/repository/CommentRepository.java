@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * 댓글
  * */
-public interface CommentRepository  extends JpaRepository<Comment, Long> {
+public interface CommentRepository  extends JpaRepository<Comment, Long>, CustomCommentRepository {
     // Optional<Comment> findByUserId(Long userid);
 
     // id(게시글번호)에 따라 댓글조회
