@@ -12,7 +12,7 @@ import java.util.List;
 public interface CommentRepository  extends JpaRepository<Comment, Long> {
     // Optional<Comment> findByUserId(Long userid);
 
-    // postNo(게시글번호)에 따라 댓글조회
+    // id(게시글번호)에 따라 댓글조회
     List<Comment> findCommentsByPostOrderByCreateDateDesc(Post post);
 
 }

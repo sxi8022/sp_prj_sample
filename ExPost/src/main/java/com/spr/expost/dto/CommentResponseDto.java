@@ -16,11 +16,11 @@ public class CommentResponseDto {
     /* Entity -> Dto*/
     public CommentResponseDto(Comment comment) {
         this.id = comment.getId();
-        this.comment = comment.getComment();
+        this.comment = comment.getContent();
         this.createDate = String.valueOf(comment.getCreateDate());
         this.updateDate = String.valueOf(comment.getUpdateDate());
         this.username = comment.getUser().getUsername();
-        this.postsId = comment.getPost().getPostNo();
+        this.postsId = comment.getPost().getId();
     }
 
     public void setCreateDate(String createDate) {

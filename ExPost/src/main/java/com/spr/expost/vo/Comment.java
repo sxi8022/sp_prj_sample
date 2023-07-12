@@ -23,11 +23,11 @@ public class Comment extends Timestamped {
     private Long id;
 
     @Column(columnDefinition = "TEXT", nullable = false)
-    private String comment; // 댓글 내용
+    private String content; // 댓글 내용
 
 
     @ManyToOne
-    @JoinColumn(name = "post_no")
+    @JoinColumn(name = "post_id")
     private Post post;
 
     // 관리자 사용자 접근권한 때문에 작성자는 업데이트 하지 않음

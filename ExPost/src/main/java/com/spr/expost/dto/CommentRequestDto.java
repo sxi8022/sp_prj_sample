@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CommentRequestDto {
     private Long id;
-    private String comment;
+    private String content;
     private String createDate;
     private String updateDate;
     private User user;
@@ -25,7 +25,7 @@ public class CommentRequestDto {
     public Comment toEntity() {
         Comment comments = Comment.builder()
                 .id(id)
-                .comment(comment)
+                .content(content)
                 .user(user)
                 .post(post)
                 .build();
@@ -37,7 +37,7 @@ public class CommentRequestDto {
     public Comment toUpdateEntity() {
         Comment comments = Comment.builder()
                 .id(id)
-                .comment(comment)
+                .content(content)
                 .user(user)
                 .post(post)
                 .build();

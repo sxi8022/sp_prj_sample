@@ -20,7 +20,7 @@ public class Post extends Timestamped{
     @jakarta.persistence.Id
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long postNo;
+    private Long id;
 
 /*
     @Column(length = 10, nullable = false)
@@ -47,19 +47,19 @@ public class Post extends Timestamped{
 
 
     @Builder
-    public Post(Long postNo,String title, String content, String postPassword, User user) {
-        this.postNo = postNo;
+    public Post(Long id,String title, String content, String postPassword, User user) {
+        this.id = id;
         this.title = title;
         this.content = content;
         this.postPassword = postPassword;
         this.user = user;
     }
 
-    public void setPostNo(Long postNo) {
-        this.postNo = postNo;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public Long getPostNo() {
-        return postNo;
+    public Long getId() {
+        return id;
     }
 }

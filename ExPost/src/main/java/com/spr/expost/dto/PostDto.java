@@ -16,7 +16,7 @@ import java.util.List;
 @ToString
 @NoArgsConstructor
 public class PostDto {
-    private Long postNo;
+    private Long id;
     @Length(max = 100, message = "제목은 100자 이하여야합니다.")
     private String title;
     private String content;
@@ -43,7 +43,7 @@ public class PostDto {
 
     public Post toUpdateEntity() {
         Post build = Post.builder()
-                .postNo(postNo)
+                .id(id)
                 //.author(author)
                 .title(title)
                 .content(content)
@@ -54,8 +54,8 @@ public class PostDto {
     }
 
     @Builder
-    public PostDto(Long postNo, String title, String content, String postPassword, User user, LocalDateTime createDate, LocalDateTime updateDate, List<Comment> comments) {
-        this.postNo = postNo;
+    public PostDto(Long id, String title, String content, String postPassword, User user, LocalDateTime createDate, LocalDateTime updateDate, List<Comment> comments) {
+        this.id = id;
         this.postPassword = postPassword;
         this.title = title;
         this.content = content;
@@ -77,7 +77,7 @@ public class PostDto {
         List<String> listString = new ArrayList<>();
         for (int i = 0; i <dtoList.size(); i ++) {
             listString.add(
-                   "글번호 = " + dtoList.get(i).getPostNo()
+                   "글번호 = " + dtoList.get(i).getId()
                      + " {" +
                             "제목='" + dtoList.get(i).getTitle() + '\'' +
                             ", 작성자명='" + dtoList.get(i).getUser().getUsername() + '\'' +
@@ -113,7 +113,7 @@ public class PostDto {
             if (dto.comments!= null && !dto.comments.isEmpty()) {
                for (int i = 0 ; i < dto.comments.size(); i ++) {
                    sb.append("\n");
-                   sb.append("댓글 :" + dto.comments.get(i).getComment() + " ");
+                   sb.append("댓글 :" + dto.comments.get(i).getContent() + " ");
                    sb.append("작성일시 :" + dto.comments.get(i).getUpdateDate() + " ");
                    sb.append("작성자 :" + dto.comments.get(i).getUser().getUsername() + " ");
                }

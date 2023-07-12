@@ -41,10 +41,10 @@ public class PostController {
     /*
     * 상세 조회
     * */
-    @GetMapping("/post/{postNo}")
+    @GetMapping("/post/{id}")
     @ResponseBody
-    public String view(@PathVariable("postNo") Long postNo) {
-        PostDto dto = postService.getPost(postNo);
+    public String view(@PathVariable("id") Long id) {
+        PostDto dto = postService.getPost(id);
         String result = dto.toViewString(dto);
         return result;
     }
@@ -64,9 +64,9 @@ public class PostController {
     /*
      * 수정
      * */
-    @PutMapping("/post/update/{postNo}")
-    public String update(@PathVariable("postNo") Long postNo, @RequestBody @Valid PostDto postDto, HttpServletRequest request) {
-        PostDto origin = postService.getPost(postNo);
+    @PutMapping("/post/update/{id}")
+    public String update(@PathVariable("id") Long id, @RequestBody @Valid PostDto postDto, HttpServletRequest request) {
+        PostDto origin = postService.getPost(id);
         String result = "";
         HashMap<String, String> resultMap = new HashMap<>();
 
@@ -76,7 +76,7 @@ public class PostController {
         }
 
         if (checkPassword(origin.getPostPassword(), postDto.getPostPassword())) {
-            postDto.setPostNo(postNo);
+            postDto.setId(id);
             resultMap = postService.updatePost(postDto, request);
             result = resultMap.get("result");
         } else {
@@ -89,9 +89,9 @@ public class PostController {
     /*
     * 삭제
     * */
-    @DeleteMapping("/post/delete/{postNo}")
-    public String delete(@PathVariable("postNo") Long postNo, String password, HttpServletRequest request) {
-        PostDto origin = postService.getPost(postNo);
+    @DeleteMapping("/post/delete/{id}")
+    public String delete(@PathVariable("id") Long id, String password, HttpServletRequest request) {
+        PostDto origin = postService.getPost(id);
         String result = "";
 
         if (origin == null) {
@@ -100,7 +100,7 @@ public class PostController {
         }
         int deleteResult = 0;
         if (checkPassword(origin.getPostPassword(), password)) {
-            deleteResult = postService.deletePost(postNo, request);
+            deleteResult = postService.deletePost(id, request);
             if (deleteResult > 0) {
                 result = "게시글을 삭제하였습니다.";
             } else if (deleteResult == -2) {

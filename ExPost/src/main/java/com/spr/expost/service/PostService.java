@@ -48,7 +48,7 @@ public class PostService {
         }
         postDto.setUser(user);
 
-        return postRepository.save(postDto.toEntity()).getPostNo();
+        return postRepository.save(postDto.toEntity()).getId();
     }
 
     /*
@@ -68,16 +68,16 @@ public class PostService {
         }
         postDto.setUser(user);
         // 원래 정보
-        Post origin = this.checkValidPost(postDto.getPostNo());
+        Post origin = this.checkValidPost(postDto.getId());
 
         /*
          * 수정하려고 하는 게시글의 작성자가 본인인지, 관리자 계정으로 수정하려고 하는지 확인.
          *  checkValid 결과 true 면 데이터리턴 아니면 예외 발생
          */
         if (this.checkValidUser(user, origin)) {
-            key = postRepository.save(postDto.toUpdateEntity()).getPostNo();
+            key = postRepository.save(postDto.toUpdateEntity()).getId();
             map.put("key", String.valueOf(key));
-            postDto.setPostNo(postDto.getPostNo());
+            postDto.setId(postDto.getId());
             PostDto dto = new PostDto();
             PostDto resultDto = this.getPost(key);
             String result = dto.toViewString(resultDto);
@@ -94,8 +94,8 @@ public class PostService {
     /**
      *  게시글이 있는지 확인
      */
-    private Post checkValidPost(Long postNo) {
-        return postRepository.findById(postNo).orElseThrow(
+    private Post checkValidPost(Long id) {
+        return postRepository.findById(id).orElseThrow(
                 () -> new ExtException(CommonErrorCode.NOT_FOUND_POST, null)
         );
     }
@@ -104,7 +104,7 @@ public class PostService {
     * 삭제
     * */
     @Transactional
-    public int deletePost(Long postNo, HttpServletRequest request) {
+    public int deletePost(Long id, HttpServletRequest request) {
         /*
          * 토큰 검증.
          */
@@ -112,14 +112,14 @@ public class PostService {
         if (user == null) {
             throw new ExtException(CommonErrorCode.NOT_FOUND_USER, null);
         }
-        PostDto postDto = this.getPost(postNo);
+        PostDto postDto = this.getPost(id);
 
         /*
          * 삭제하려고 하는 게시글의 작성자가 본인인지, 관리자 계정으로 수정하려고 하는지 확인.
          *  checkValid 결과 true 면 데이터리턴 아니면 예외 발생
          */
         if (this.checkValidUser(user, postDto.toEntity())) {
-            postRepository.deleteById(postNo);
+            postRepository.deleteById(id);
             return 1;
         } else {
             return -2;
@@ -136,7 +136,7 @@ public class PostService {
 
         for(Post post : postList) {
             PostDto postDto = PostDto.builder()
-                    .postNo(post.getPostNo())
+                    .id(post.getId())
                     .user(post.getUser())
                     .title(post.getTitle())
                     .content(post.getContent())
@@ -151,15 +151,15 @@ public class PostService {
      * 게시글 정보 얻기
      * */
     @Transactional
-    public PostDto getPost(Long postNo) {
-        Optional<Post> postWrapper = postRepository.findById(postNo);
+    public PostDto getPost(Long id) {
+        Optional<Post> postWrapper = postRepository.findById(id);
         PostDto postDto = null;
         if (postWrapper.isPresent()) {
            Post post = postWrapper.get();
             List<Comment> commentList = commentRepository.findCommentsByPostOrderByCreateDateDesc(post);
 
             postDto = PostDto.builder()
-                    .postNo(post.getPostNo())
+                    .id(post.getId())
                     .title(post.getTitle())
                     .content(post.getContent())
                     .user(post.getUser())

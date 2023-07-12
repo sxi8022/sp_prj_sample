@@ -33,7 +33,7 @@ public class BoardTest {
 
         for(Post post : postList) {
             PostDto postDto = PostDto.builder()
-                    .postNo(post.getPostNo())
+                    .id(post.getId())
                     .user(post.getUser())
                     .title(post.getTitle())
                     .content(post.getContent())
@@ -51,12 +51,12 @@ public class BoardTest {
     * */
     @Test
     void findByPostNo() {
-        Long postNo = 1L;
-        Optional<Post> postWrapper = postRepository.findById(postNo);
+        Long id = 1L;
+        Optional<Post> postWrapper = postRepository.findById(id);
         Post post = postWrapper.get();
 
         PostDto postDto = PostDto.builder()
-                .postNo(post.getPostNo())
+                .id(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .user(post.getUser())
@@ -86,7 +86,7 @@ public class BoardTest {
 
         PostDto post = new PostDto(title, content, user, postPassword);
         Post data = postRepository.save(post.toEntity());
-        Long dataKey = data.getPostNo();
+        Long dataKey = data.getId();
         System.out.println("결과값은 " + dataKey);
     }
 
