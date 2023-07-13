@@ -5,12 +5,11 @@ import com.spr.expost.dto.PostResponseDto;
 import com.spr.expost.security.UserDetailsImpl;
 import com.spr.expost.service.PostService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /*
 * 게시글
@@ -29,16 +28,16 @@ public class PostController {
      * */
     @GetMapping("/postlist")
     @ResponseBody
-    public String list() {
-        List<PostDto> postDtoList = postService.getPostList();
-        PostDto tempDto = new PostDto();
-        // 전체 리스트 문자열로 출력
-        List<String> toListString = tempDto.toListString(postDtoList);
-        String sb = "";
-        for (int i=0; i < toListString.size(); i++) {
-           sb += (toListString.get(i) + "\n");
-        }
-        return sb;
+    public ResponseEntity list(
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam("sortBy") String sortBy,
+            @RequestParam("isAsc") boolean isAsc,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        Page<PostResponseDto> postDtoList = postService.getPostList(userDetails,
+                page-1, size, sortBy, isAsc);
+        return new ResponseEntity<>(postDtoList, HttpStatus.OK);
     }
 
     /**

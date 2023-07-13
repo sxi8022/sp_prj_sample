@@ -14,6 +14,9 @@ import com.spr.expost.security.UserDetailsImpl;
 import com.spr.expost.vo.*;
 import jakarta.transaction.Transactional;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -178,21 +181,33 @@ public class PostService {
     * 조회
     * */
     @Transactional
-    public List<PostDto> getPostList() {
-        List<Post> postList = postRepository.findAll(Sort.by(Sort.Direction.DESC, "createDate"));
-        List<PostDto> postDtoList = new ArrayList<>();
+    public Page<PostResponseDto> getPostList(UserDetailsImpl userDetails, int page, int size, String sortBy, boolean isAsc) {
+        User user = userDetails.getUser();
 
-        for(Post post : postList) {
-            PostDto postDto = PostDto.builder()
-                    .id(post.getId())
-                    .user(post.getUser())
-                    .title(post.getTitle())
-                    .content(post.getContent())
-                    .createDate(post.getCreateDate())
-                    .build();
-            postDtoList.add(postDto);
+        if (user == null) {
+            throw new NullPointerException(messagesource.getMessage(
+                    "not.found.user",
+                    null,
+                    "Wrong user",
+                    Locale.getDefault() //기본언어 설정
+            ));
         }
-        return postDtoList;
+
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+        UserRoleEnum userRoleEnum = user.getRole();
+        Page<Post> postList;
+
+        if (userRoleEnum == UserRoleEnum.USER) {
+            postList = postRepository.findAllByUser(user, pageable);
+        } else {
+            postList = postRepository.findAll(pageable);
+        }
+        PostDao dao = new PostDao();
+        Page<PostResponseDto> resultDtoList = postList.map(v -> dao.ConvertToDto(v));
+
+        return resultDtoList;
     }
 
     /*

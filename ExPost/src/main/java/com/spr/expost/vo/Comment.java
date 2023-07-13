@@ -74,7 +74,5 @@ public class Comment extends Timestamped {
         this.likeCount = likeCount;
     }
 
-    public void getCommentLikes(List<CommentLike> commentLikes) {
-    }
 }
 

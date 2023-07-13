@@ -111,9 +111,9 @@ public class JwtUtil {
             } else {
                 throw new IllegalArgumentException(
                         messagesource.getMessage(
-                                "not.found.comment",
+                                "jwt.not.valid.token",
                                 null,
-                                "Wrong post",
+                                "잘못된 값입니다.",
                                 Locale.getDefault() //기본언어 설정
                     )
                 );
