@@ -22,6 +22,7 @@ public class CommentRequestDto {
     private User user;
     private Post post;  // 게시글
     private int likeCount; //좋아요 최초 0으로 입력
+    private Long parentId; // 부모글 id
 
     private List<CommentLike> commentLikes;
 

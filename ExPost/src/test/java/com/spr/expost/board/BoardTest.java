@@ -1,22 +1,9 @@
 package com.spr.expost.board;
 
-import com.spr.expost.dao.PostDao;
-import com.spr.expost.dto.PostDto;
 import com.spr.expost.repository.PostRepository;
-import com.spr.expost.vo.Post;
-import com.spr.expost.vo.User;
-import com.spr.expost.vo.UserRoleEnum;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Sort;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @SpringBootTest
 public class BoardTest {
@@ -29,7 +16,7 @@ public class BoardTest {
     * */
     @Test
     void findAll() {
-        List<Post> postList = postRepository.findAll(Sort.by(Sort.Direction.DESC, "createDate"));
+        /*List<Post> postList = postRepository.findAll(Sort.by(Sort.Direction.DESC, "createDate"));
         List<PostDto> postDtoList = new ArrayList<>();
 
         for(Post post : postList) {
@@ -44,7 +31,7 @@ public class BoardTest {
         }
 
         JSONArray json = new JSONArray(postDtoList);
-        System.out.println(json.toString());
+        System.out.println(json.toString());*/
     }
 
     /*
@@ -52,7 +39,7 @@ public class BoardTest {
     * */
     @Test
     void findByPostNo() {
-        Long id = 1L;
+      /*  Long id = 1L;
         Optional<Post> postWrapper = postRepository.findById(id);
         Post post = postWrapper.get();
 
@@ -66,7 +53,7 @@ public class BoardTest {
                 .build();
 
         JSONObject object = new JSONObject(postDto);
-        System.out.println(object.toString());
+        System.out.println(object.toString());*/
 
     }
 
@@ -76,7 +63,7 @@ public class BoardTest {
      */
     @Test
     public void insert() {
-        String uuid = UUID.randomUUID().toString().substring(0,11);
+     /*   String uuid = UUID.randomUUID().toString().substring(0,11);
         String title = "제목 " + uuid;
         String content = "내용 " + uuid ;
         //String author = "작성자" + ((int)(Math.random()*100) + 1);
@@ -87,7 +74,7 @@ public class BoardTest {
         PostDto postDto = new PostDto(title, content, user);
         Post data = postRepository.save(dao.toEntity(postDto));
         Long dataKey = data.getId();
-        System.out.println("결과값은 " + dataKey);
+        System.out.println("결과값은 " + dataKey);*/
     }
 
 

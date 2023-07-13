@@ -7,6 +7,7 @@ import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -29,4 +30,18 @@ public class PostResponseDto {
     private Integer viewCount; // 조회수
 
     private List<PostLike> postLikes; // 좋아요 목록
+
+    private List<String> categories;// 카테고리
+
+
+    public void setComments(List<CommentResponseDto> comments) {
+        this.comments = new ArrayList<>();
+        for (CommentResponseDto item : comments) {
+            this.comments.add(item);
+        }
+    }
+
+    public void setPostLikes(List<PostLike> postLikes) {
+        this.postLikes = postLikes;
+    }
 }

@@ -35,6 +35,9 @@ public class PostDto {
 
     private List<PostLike> postLikes; // 좋아요 목록
 
+
+    private List<String> categories;
+
     public void setPostLikes(List<PostLike> postLikes) {
         this.postLikes = postLikes;
     }

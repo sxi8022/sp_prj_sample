@@ -46,6 +46,22 @@ public class Comment extends Timestamped {
     private List<CommentLike> commentLikes = new ArrayList<>();
 
 
+    // 부모
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Comment parent;
+
+    // 자식
+    @Builder.Default
+    @OneToMany(mappedBy = "parent", orphanRemoval = true)
+    private List<Comment> children = new ArrayList<>();
+
+
+    // 부모 댓글 수정
+    public void updateParent(Comment parent){
+        this.parent = parent;
+    }
+
     @Override
     public LocalDateTime getUpdateDate() {
         return super.getUpdateDate();

@@ -61,6 +61,9 @@ public class Post extends Timestamped{
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostLike> postLikes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "post", orphanRemoval = true)
+    private List<PostCategory> postCategoryList = new ArrayList<>();
+
 
     @Builder
     public Post(Long id,String title, String content, User user, int likeCount, int viewCount, List<PostLike> postLikes) {

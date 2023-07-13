@@ -3,8 +3,11 @@ package com.spr.expost.repository.impl;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.spr.expost.repository.CustomCommentRepository;
 import com.spr.expost.vo.Comment;
+import com.spr.expost.vo.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 import static com.spr.expost.vo.QComment.comment;
 
@@ -31,5 +34,16 @@ public class CommentRepositoryImpl implements CustomCommentRepository {
                 .set(comment.likeCount, comment.likeCount.subtract(1))
                 .where(comment.eq(selectedComment))
                 .execute();
+    }
+
+    // 게시글의 댓글 전체 가져오기
+    @Override
+    public List<Comment> findAllByPost(Post post){
+        return queryFactory.selectFrom(comment)
+                .leftJoin(comment.parent)
+                .fetchJoin()
+                .where(comment.post.id.eq(post.getId()))
+                .orderBy(comment.parent.id.asc().nullsFirst(), comment.createDate.asc())
+                .fetch();
     }
 }

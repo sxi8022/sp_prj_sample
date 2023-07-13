@@ -4,6 +4,8 @@ import com.spr.expost.dto.CommentRequestDto;
 import com.spr.expost.dto.CommentResponseDto;
 import com.spr.expost.vo.Comment;
 
+import java.util.ArrayList;
+
 public class CommentDao {
 
     /* Dto -> Entity */
@@ -12,11 +14,28 @@ public class CommentDao {
         return CommentResponseDto.builder()
                 .id(comment.getId())
                 .content(comment.getContent())
-                .updateDate(String.valueOf(comment.getUpdateDate()))
-                .createDate(String.valueOf(comment.getCreateDate()))
+                .updateDate(comment.getUpdateDate())
+                .createDate(comment.getCreateDate())
                 .postId(comment.getPost().getId())
                 .postTitle(comment.getPost().getTitle())
                 .likeCount(comment.getLikeCount())
+                .build();
+    }
+
+    /* Dto -> Entity */
+    // 부모댓글이 있을때 사용
+    public CommentResponseDto ConvertToDtoWithParent(Comment comment) {
+        CommentDao dao = new CommentDao();
+        return CommentResponseDto.builder()
+                .id(comment.getId())
+                .content(comment.getContent())
+                .updateDate(comment.getUpdateDate())
+                .createDate(comment.getCreateDate())
+                .postId(comment.getPost().getId())
+                .postTitle(comment.getPost().getTitle())
+                .likeCount(comment.getLikeCount())
+                .parentId(comment.getParent() == null ? 0 : comment.getParent().getId())
+                .children(comment.getChildren() == null ? new ArrayList<CommentResponseDto>() : comment.getChildren().stream().map(v -> dao.ConvertToDto(v)).toList())
                 .build();
     }
 

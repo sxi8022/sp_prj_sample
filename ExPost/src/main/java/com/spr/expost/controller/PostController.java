@@ -89,14 +89,4 @@ public class PostController {
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-
-    /*패스워드 체크(사용안함 , 로그인 유저 체크로 역할 변경)
-     *
-     * */
-/*    public boolean checkPassword(String originPassword, String newPassword) {
-        if (originPassword.equals(newPassword)) {
-            return true;
-        }
-        return false;
-    }*/
 }

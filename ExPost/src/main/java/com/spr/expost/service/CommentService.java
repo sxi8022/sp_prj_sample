@@ -4,7 +4,7 @@ import com.spr.expost.dao.CommentDao;
 import com.spr.expost.dto.ApiResponseDto;
 import com.spr.expost.dto.CommentRequestDto;
 import com.spr.expost.dto.CommentResponseDto;
-import com.spr.expost.jwt.JwtUtil;
+import com.spr.expost.exception.PostNotFoundException;
 import com.spr.expost.repository.CommentLikeRepository;
 import com.spr.expost.repository.CommentRepository;
 import com.spr.expost.repository.PostRepository;
@@ -29,12 +29,11 @@ public class CommentService {
     private final UserRepository userRepository;
     private final PostRepository postsRepository;
     private final CommentLikeRepository commentLikeRepository;
-    private final JwtUtil jwtUtil;
     private final MessageSource messagesource; // MessageSource  포로퍼티 값을 자동으로 읽어와 bean 생성
 
     /* 댓글저장 */
     @Transactional
-    public CommentResponseDto commentSave(Long id, CommentRequestDto dto, UserDetailsImpl userDetails) {
+    public CommentResponseDto commentSave(Long id, CommentRequestDto requestDto, UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
 
         if (user == null) {
@@ -50,18 +49,64 @@ public class CommentService {
          * 게시글 있는지 확인
          * */
         Post post = postsRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("댓글 쓰기 실패: 해당 게시글이 존재하지 않습니다." + id));
+                new PostNotFoundException(
+                        messagesource.getMessage(
+                                "not.found.post",
+                                null,
+                                "Wrong post",
+                                Locale.getDefault() //기본언어 설정
+                        )
+                )
+        );
+        requestDto.setPost(post); // post 객체 주입
+
+        Comment parent = null;
+        // 자식댓글인 경우
+        if (requestDto.getParentId() != null && requestDto.getParentId() != 0) {
+            parent = this.checkValidComment(requestDto.getParentId());
+            if (null == parent) {
+                throw new NullPointerException(
+                        messagesource.getMessage(
+                                "not.found.comment",
+                                null,
+                                "Wrong comment",
+                                Locale.getDefault() //기본언어 설정
+                        )
+                );
+            }
+            // 부모댓글의 게시글 번호와 자식댓글의 게시글 번호 같은지 체크하기
+            if (parent.getPost().getId() != requestDto.getPost().getId()) {
+                throw new IllegalArgumentException(
+                        messagesource.getMessage(
+                                "not.comment.correct.with.parent.child",
+                                null,
+                                "Wrong comment",
+                                Locale.getDefault() //기본언어 설정
+                        )
+                );
+            }
+        }
+
+
         // 선택한 게시글이 있다면 댓글을 등록하고 등록된 댓글 반환하기
         // 댓글 저장
         Comment comment = new Comment();
-        comment.setContent(dto.getContent());
+        comment.setContent(requestDto.getContent());
         comment.setUser(user);
         comment.setPost(post);
         comment.setLikeCount(0); // 처음에 좋아요는 0
+        if (null != parent) {
+            comment.updateParent(parent);
+        }
 
         Comment newComment = commentRepository.save(comment);
         CommentDao dao = new CommentDao();
-        CommentResponseDto responseDto = dao.ConvertToDto(newComment);
+        CommentResponseDto responseDto = null;
+        if (parent != null) {
+            responseDto = dao.ConvertToDtoWithParent(newComment);
+        } else {
+            responseDto = dao.ConvertToDto(newComment);
+        }
 
         return responseDto;
     }
@@ -89,10 +134,18 @@ public class CommentService {
         String createDate = String.valueOf(comment.getCreateDate());
 
         /*
-        * 게시글 있는지 확인
-        * */
+         * 게시글 있는지 확인
+         * */
         Post post = postsRepository.findById(comment.getPost().getId()).orElseThrow(() ->
-                new IllegalArgumentException("댓글 쓰기 실패: 해당 게시글이 존재하지 않습니다." + id));
+                new PostNotFoundException(
+                        messagesource.getMessage(
+                                "not.found.post",
+                                null,
+                                "Wrong post",
+                                Locale.getDefault() //기본언어 설정
+                        )
+                )
+        );
 
         CommentResponseDto responseDto;
         CommentDao dao = new CommentDao();
@@ -109,16 +162,23 @@ public class CommentService {
             Comment newComment = dao.toUpdateEntity(requestDto);
             Comment resultComm = commentRepository.save(newComment);
             responseDto = dao.ConvertToDto(resultComm);
-            responseDto.setCreateDate(createDate);
+            // responseDto.setCreateDate(createDate);
         } else {
-            responseDto = dao.ConvertToDto(new Comment((long) -2, "수정하려는 댓글이 본인이 아니거나, 관리자가 아닙니다.", post, user, -1, null));
+            throw new IllegalArgumentException(
+                    messagesource.getMessage(
+                            "not.auth.update.writer",
+                            null,
+                            "Wrong comment",
+                            Locale.getDefault() //기본언어 설정
+                    )
+            );
             // throw new ExtException(CommonErrorCode.UNAUTHORIZED_USER, null);
         }
         return responseDto;
     }
 
     /**
-     *  댓글이 있는지 확인
+     * 댓글이 있는지 확인
      */
     private Comment checkValidComment(Long commentId) {
         return commentRepository.findById(commentId).orElseThrow(
@@ -140,7 +200,7 @@ public class CommentService {
     private boolean checkValidUser(User user, User commentUser) {
         return !(
                 !user.getUsername().equals(commentUser.getUsername())
-                && !user.getRole().equals(UserRoleEnum.ADMIN)
+                        && !user.getRole().equals(UserRoleEnum.ADMIN)
         );
     }
 
@@ -176,18 +236,33 @@ public class CommentService {
                 Comment deleteComment = opComment.get();
                 commentRepository.delete(deleteComment);
                 return ApiResponseDto.builder()
-                        .msg("success")
+                        .msg(messagesource.getMessage(
+                                "success.comment.delete",
+                                null,
+                                "Wrong comment",
+                                Locale.getDefault() //기본언어 설정
+                        ))
                         .statusCode(HttpStatus.OK.value())
                         .build();
             } else {
                 return ApiResponseDto.builder()
-                        .msg("삭제하려는 댓글이 본인이 아니거나, 관리자가 아닙니다.")
+                        .msg(messagesource.getMessage(
+                                "not.auth.delete.writer",
+                                null,
+                                "Wrong comment",
+                                Locale.getDefault() //기본언어 설정
+                        ))
                         .statusCode(HttpStatus.UNAUTHORIZED.value())
                         .build();
             }
         } else {
             return ApiResponseDto.builder()
-                    .msg("삭제하려는 댓글이 존재하지 않습니다.")
+                    .msg(messagesource.getMessage(
+                            "not.comment.delete.exist",
+                            null,
+                            "Wrong comment",
+                            Locale.getDefault() //기본언어 설정
+                    ))
                     .statusCode(HttpStatus.NOT_FOUND.value())
                     .build();
         }
