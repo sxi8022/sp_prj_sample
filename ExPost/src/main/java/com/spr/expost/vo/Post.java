@@ -9,6 +9,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 // 게시글
@@ -40,7 +41,7 @@ public class Post extends Timestamped{
     private String postPassword;
     */
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     @OrderBy("id asc") // 댓글 정렬
     private List<Comment> comments;
 
@@ -57,9 +58,12 @@ public class Post extends Timestamped{
     @Column(name = "view_count",nullable = false)
     private Integer viewCount;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostLike> postLikes = new ArrayList<>();
+
 
     @Builder
-    public Post(Long id,String title, String content, User user, int likeCount, int viewCount) {
+    public Post(Long id,String title, String content, User user, int likeCount, int viewCount, List<PostLike> postLikes) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -67,6 +71,7 @@ public class Post extends Timestamped{
         this.user = user;
         this.likeCount = likeCount;
         this.viewCount = viewCount;
+        this.postLikes = postLikes;
     }
 
     public void setId(Long id) {

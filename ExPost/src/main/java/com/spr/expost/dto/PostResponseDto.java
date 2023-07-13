@@ -1,6 +1,6 @@
 package com.spr.expost.dto;
 
-import com.spr.expost.vo.Comment;
+import com.spr.expost.vo.PostLike;
 import com.spr.expost.vo.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,10 +21,12 @@ public class PostResponseDto {
     // private String postPassword;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
-    private List<Comment> comments;
+    private List<CommentResponseDto> comments;
 
     private User user;
 
     private Integer likeCount; //좋아요
     private Integer viewCount; // 조회수
+
+    private List<PostLike> postLikes; // 좋아요 목록
 }

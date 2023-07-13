@@ -1,6 +1,7 @@
 package com.spr.expost.dto;
 
 import com.spr.expost.vo.Comment;
+import com.spr.expost.vo.PostLike;
 import com.spr.expost.vo.User;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
@@ -29,8 +30,14 @@ public class PostDto {
 
     private User user;
 
-    private Integer likeCount; //좋아요
+    private Integer likeCount; //좋아요 수
     private Integer viewCount; // 조회수
+
+    private List<PostLike> postLikes; // 좋아요 목록
+
+    public void setPostLikes(List<PostLike> postLikes) {
+        this.postLikes = postLikes;
+    }
 
     @Builder
     public PostDto(Long id, String title, String content, User user, LocalDateTime createDate, LocalDateTime updateDate, List<Comment> comments, int likeCount, int viewCount) {

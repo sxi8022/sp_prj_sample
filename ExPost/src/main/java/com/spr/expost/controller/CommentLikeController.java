@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/posts/comments/like")
+@RequestMapping("/boards/posts/comments/likes")
 public class CommentLikeController {
 
     private final CommentLikeService likeService;
-
+    /**
+     * 좋아요
+     * */
     // 좋아요
     @PostMapping
     public ResponseEntity<ApiResponseDto> insert(@RequestBody @Valid CommentLikeRequestDto likeRequestDto) throws Exception {
@@ -25,7 +27,9 @@ public class CommentLikeController {
         return result;
     }
 
-    // 좋아요 취소
+    /**
+     * 좋아요 취소
+     * */
     @DeleteMapping
     public ResponseEntity<ApiResponseDto> delete(@RequestBody @Valid CommentLikeRequestDto likeRequestDto) {
         likeService.delete(likeRequestDto);

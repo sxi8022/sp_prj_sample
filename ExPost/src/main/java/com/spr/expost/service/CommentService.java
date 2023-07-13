@@ -4,22 +4,21 @@ import com.spr.expost.dao.CommentDao;
 import com.spr.expost.dto.ApiResponseDto;
 import com.spr.expost.dto.CommentRequestDto;
 import com.spr.expost.dto.CommentResponseDto;
-import com.spr.expost.exception.ExtException;
 import com.spr.expost.jwt.JwtUtil;
+import com.spr.expost.repository.CommentLikeRepository;
 import com.spr.expost.repository.CommentRepository;
 import com.spr.expost.repository.PostRepository;
 import com.spr.expost.repository.UserRepository;
-import com.spr.expost.util.CommonErrorCode;
-import com.spr.expost.vo.Comment;
-import com.spr.expost.vo.Post;
-import com.spr.expost.vo.User;
-import com.spr.expost.vo.UserRoleEnum;
-import jakarta.servlet.http.HttpServletRequest;
+import com.spr.expost.security.UserDetailsImpl;
+import com.spr.expost.vo.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -29,15 +28,22 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final PostRepository postsRepository;
+    private final CommentLikeRepository commentLikeRepository;
     private final JwtUtil jwtUtil;
+    private final MessageSource messagesource; // MessageSource  포로퍼티 값을 자동으로 읽어와 bean 생성
 
     /* 댓글저장 */
     @Transactional
-    public CommentResponseDto commentSave(Long id, CommentRequestDto dto, HttpServletRequest request) {
-        User user = jwtUtil.checkToken(request);
+    public CommentResponseDto commentSave(Long id, CommentRequestDto dto, UserDetailsImpl userDetails) {
+        User user = userDetails.getUser();
 
         if (user == null) {
-            throw new ExtException(CommonErrorCode.NOT_FOUND_USER, null);
+            throw new NullPointerException(messagesource.getMessage(
+                    "not.found.user",
+                    null,
+                    "Wrong user",
+                    Locale.getDefault() //기본언어 설정
+            ));
         }
 
         /*
@@ -61,11 +67,20 @@ public class CommentService {
     }
 
     // 댓글 수정
-    public CommentResponseDto updateComment(CommentRequestDto requestDto, Long id, HttpServletRequest request) {
+    public CommentResponseDto updateComment(CommentRequestDto requestDto, Long id, UserDetailsImpl userDetails) {
         /*
-         * 토큰 검증.
+         * 로그인 검증.
          */
-        User user = jwtUtil.checkToken(request);
+        User user = userDetails.getUser();
+
+        if (user == null) {
+            throw new NullPointerException(messagesource.getMessage(
+                    "not.found.user",
+                    null,
+                    "Wrong user",
+                    Locale.getDefault() //기본언어 설정
+            ));
+        }
 
         /*
          * 작성한 댓글이 존재하는지 확인.
@@ -89,12 +104,14 @@ public class CommentService {
             requestDto.setUser(user);
             requestDto.setPost(post);
             requestDto.setId(comment.getId());
-
+            List<CommentLike> commentLikes = commentLikeRepository.findByCommentId(comment.getId());
+            requestDto.setCommentLikes(commentLikes);
             Comment newComment = dao.toUpdateEntity(requestDto);
-            responseDto = dao.ConvertToDto(commentRepository.save(newComment));
+            Comment resultComm = commentRepository.save(newComment);
+            responseDto = dao.ConvertToDto(resultComm);
             responseDto.setCreateDate(createDate);
         } else {
-            responseDto = dao.ConvertToDto(new Comment((long) -2, "수정하려는 댓글이 본인이 아니거나, 관리자가 아닙니다.", post, user, -1));
+            responseDto = dao.ConvertToDto(new Comment((long) -2, "수정하려는 댓글이 본인이 아니거나, 관리자가 아닙니다.", post, user, -1, null));
             // throw new ExtException(CommonErrorCode.UNAUTHORIZED_USER, null);
         }
         return responseDto;
@@ -105,7 +122,14 @@ public class CommentService {
      */
     private Comment checkValidComment(Long commentId) {
         return commentRepository.findById(commentId).orElseThrow(
-                () -> new ExtException(CommonErrorCode.NOT_FOUND_COMMENT, null)
+                () -> new NullPointerException(
+                        messagesource.getMessage(
+                                "not.found.comment",
+                                null,
+                                "Wrong post",
+                                Locale.getDefault() //기본언어 설정
+                        )
+                )
         );
     }
 
@@ -123,11 +147,20 @@ public class CommentService {
     /**
      * 댓글 삭제
      */
-    public ApiResponseDto deleteComment(Long id, HttpServletRequest request) {
+    public ApiResponseDto deleteComment(Long id, UserDetailsImpl userDetails) {
         /*
-         * 토큰 검증.
+         * 로그인 검증.
          */
-        User user = jwtUtil.checkToken(request);
+        User user = userDetails.getUser();
+
+        if (user == null) {
+            throw new NullPointerException(messagesource.getMessage(
+                    "not.found.user",
+                    null,
+                    "Wrong user",
+                    Locale.getDefault() //기본언어 설정
+            ));
+        }
 
         /*
          * 작성한 댓글이 존재하는지 확인.
@@ -140,7 +173,8 @@ public class CommentService {
              *  checkValid 결과 true 면 데이터리턴 아니면 예외 발생
              */
             if (this.checkValidUser(user, opComment.get().getUser())) {
-                commentRepository.delete(opComment.get());
+                Comment deleteComment = opComment.get();
+                commentRepository.delete(deleteComment);
                 return ApiResponseDto.builder()
                         .msg("success")
                         .statusCode(HttpStatus.OK.value())

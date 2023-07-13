@@ -9,6 +9,8 @@ import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -40,6 +42,10 @@ public class Comment extends Timestamped {
     @Column(name = "like_count", nullable = false)
     private Integer likeCount;
 
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommentLike> commentLikes = new ArrayList<>();
+
+
     @Override
     public LocalDateTime getUpdateDate() {
         return super.getUpdateDate();
@@ -66,6 +72,9 @@ public class Comment extends Timestamped {
 
     public void setLikeCount(Integer likeCount) {
         this.likeCount = likeCount;
+    }
+
+    public void getCommentLikes(List<CommentLike> commentLikes) {
     }
 }
 

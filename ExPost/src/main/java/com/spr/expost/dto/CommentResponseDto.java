@@ -19,4 +19,5 @@ public class CommentResponseDto {
     public void setCreateDate(String createDate) {
         this.createDate = createDate;
     }
+
 }

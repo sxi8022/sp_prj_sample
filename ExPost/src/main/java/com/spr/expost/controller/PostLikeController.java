@@ -12,18 +12,22 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/posts/like")
+@RequestMapping("/boards/posts/likes")
 public class PostLikeController {
     private final PostLikeService likeService;
 
-    // 좋아요
+    /**
+     * 좋아요
+     * */
     @PostMapping
     public ResponseEntity<ApiResponseDto> insert(@RequestBody @Valid PostLikeRequestDto likeRequestDto) throws Exception {
         ResponseEntity<ApiResponseDto> result = likeService.insert(likeRequestDto);
         return result;
     }
 
-    // 좋아요 취소
+    /**
+     * 좋아요 취소
+     * */
     @DeleteMapping
     public ResponseEntity<ApiResponseDto> delete(@RequestBody @Valid PostLikeRequestDto likeRequestDto) {
         likeService.delete(likeRequestDto);

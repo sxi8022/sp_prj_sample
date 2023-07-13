@@ -2,6 +2,7 @@ package com.spr.expost.service;
 
 import com.spr.expost.dto.ApiResponseDto;
 import com.spr.expost.dto.PostLikeRequestDto;
+import com.spr.expost.exception.PostNotFoundException;
 import com.spr.expost.repository.PostLikeRepository;
 import com.spr.expost.repository.PostRepository;
 import com.spr.expost.repository.UserRepository;
@@ -14,7 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Locale;
 
 
 @Service
@@ -33,10 +35,26 @@ public class PostLikeService {
     public ResponseEntity<ApiResponseDto> insert(PostLikeRequestDto PostLikeRequestDto) throws Exception {
 
         User user = userRepository.findById(PostLikeRequestDto.getUserId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "좋아요를 누른 사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NullPointerException(
+                                messagesource.getMessage(
+                                        "not.found.user",
+                                        null,
+                                        "Wrong user",
+                                        Locale.getDefault() //기본언어 설정
+                                )
+                        )
+                );
 
         Post post = postRepository.findById(PostLikeRequestDto.getPostId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new PostNotFoundException(
+                                messagesource.getMessage(
+                                        "not.found.post",
+                                        null,
+                                        "Wrong post",
+                                        Locale.getDefault() //기본언어 설정
+                                )
+                        )
+                );
 
         // 이미 좋아요되어있으면 에러 반환
         if (likeRepository.findByUserAndPost(user, post).isPresent()) {
@@ -61,13 +79,37 @@ public class PostLikeService {
     public void delete(PostLikeRequestDto PostLikeRequestDto) {
 
         User user = userRepository.findById(PostLikeRequestDto.getUserId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "좋아요를 누른 사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NullPointerException(
+                                messagesource.getMessage(
+                                        "not.found.user",
+                                        null,
+                                        "Wrong post",
+                                        Locale.getDefault() //기본언어 설정
+                                )
+                        )
+                );
 
         Post post = postRepository.findById(PostLikeRequestDto.getPostId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new PostNotFoundException(
+                                messagesource.getMessage(
+                                        "not.found.post",
+                                        null,
+                                        "Wrong post",
+                                        Locale.getDefault() //기본언어 설정
+                                )
+                        )
+                );
 
         PostLike like = (PostLike) likeRepository.findByUserAndPost(user, post)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "좋아요를 누른 기록을 찾을 수 없습니다."));
+                .orElseThrow(() -> new PostNotFoundException(
+                                messagesource.getMessage(
+                                        "not.found.postLike",
+                                        null,
+                                        "Wrong postLike",
+                                        Locale.getDefault() //기본언어 설정
+                                )
+                        )
+                );
 
         likeRepository.delete(like);
         postRepository.subLikeCount(post); // 상속받은 클래스에서 수행

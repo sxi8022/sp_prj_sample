@@ -1,8 +1,11 @@
 package com.spr.expost.dao;
 
+import com.spr.expost.dto.CommentResponseDto;
 import com.spr.expost.dto.PostDto;
 import com.spr.expost.dto.PostResponseDto;
 import com.spr.expost.vo.Post;
+
+import java.util.List;
 
 public class PostDao {
     public PostResponseDto ConvertToDto(Post post) {
@@ -17,6 +20,23 @@ public class PostDao {
                 .build();
     }
 
+    /*
+    * commentList : 댓글 목록
+    * postLikes : 좋아요 목록
+    * */
+    public PostResponseDto ConvertToDtoWithLists(Post post, List<CommentResponseDto> commentList) {
+        return PostResponseDto.builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .updateDate(post.getUpdateDate())
+                .createDate(post.getCreateDate())
+                .likeCount(post.getLikeCount())
+                .viewCount(post.getViewCount())
+                .comments(commentList)
+                .build();
+    }
+
     public Post toEntity(PostDto postDto) {
         Post build = Post.builder()
                 //.author(author)
@@ -26,6 +46,7 @@ public class PostDao {
                 .user(postDto.getUser())
                 .likeCount(postDto.getLikeCount())
                 .viewCount(postDto.getViewCount())
+                .postLikes(postDto.getPostLikes())
                 .build();
         return build;
     }
@@ -39,9 +60,20 @@ public class PostDao {
                 .likeCount(postDto.getLikeCount())
                 .viewCount(postDto.getViewCount())
                 .user(postDto.getUser())
+                .postLikes(postDto.getPostLikes())
                 .build();
         return build;
     }
+
+    /*
+    *  조회수 추가
+    * */
+    public PostDto addViewCount(PostDto postDto) {
+        postDto.setViewCount(postDto.getViewCount() + 1);
+
+       return postDto;
+    }
+
 
 
 }

@@ -14,7 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
@@ -30,12 +31,27 @@ public class CommentLikeService {
      * */
     @Transactional
     public ResponseEntity<ApiResponseDto> insert(CommentLikeRequestDto commentLikeRequestDto) throws Exception {
-
         User user = userRepository.findById(commentLikeRequestDto.getUserId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "좋아요를 누른 사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NullPointerException(
+                                messagesource.getMessage(
+                                        "not.found.user",
+                                        null,
+                                        "Wrong post",
+                                        Locale.getDefault() //기본언어 설정
+                                )
+                        )
+                );
 
         Comment comment = commentRepository.findById(commentLikeRequestDto.getCommentId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NullPointerException(
+                                messagesource.getMessage(
+                                        "not.found.comment",
+                                        null,
+                                        "Wrong post",
+                                        Locale.getDefault() //기본언어 설정
+                                )
+                        )
+                );
 
         // 이미 좋아요되어있으면 에러 반환
         if (likeRepository.findByUserAndComment(user, comment).isPresent()) {
@@ -60,14 +76,38 @@ public class CommentLikeService {
     public void delete(CommentLikeRequestDto commentLikeRequestDto) {
 
         User user = userRepository.findById(commentLikeRequestDto.getUserId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "좋아요를 누른 사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NullPointerException(
+                                messagesource.getMessage(
+                                        "not.found.user",
+                                        null,
+                                        "Wrong post",
+                                        Locale.getDefault() //기본언어 설정
+                                )
+                        )
+                );
 
         Comment comment = commentRepository.findById(commentLikeRequestDto.getCommentId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NullPointerException(
+                                messagesource.getMessage(
+                                        "not.found.comment",
+                                        null,
+                                        "Wrong post",
+                                        Locale.getDefault() //기본언어 설정
+                                )
+                        )
+                );
 
         CommentLike like = (CommentLike) likeRepository.findByUserAndComment(user, comment)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "좋아요를 누른 기록을 찾을 수 없습니다."));
-
+                .orElseThrow(() -> new NullPointerException(
+                                messagesource.getMessage(
+                                        "not.found.commentLike",
+                                        null,
+                                        "Wrong post",
+                                        Locale.getDefault() //기본언어 설정
+                                )
+                        )
+                );
+        
         likeRepository.delete(like);
         commentRepository.subLikeCount(comment); // 상속받은 클래스에서 수행
     }

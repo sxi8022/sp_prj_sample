@@ -4,13 +4,10 @@ import com.spr.expost.dto.PostDto;
 import com.spr.expost.dto.PostResponseDto;
 import com.spr.expost.security.UserDetailsImpl;
 import com.spr.expost.service.PostService;
-import com.spr.expost.vo.User;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +16,7 @@ import java.util.List;
 * 게시글
 * */
 @RestController
-@RequestMapping("/api/board")
+@RequestMapping("/boards")
 public class PostController {
     private PostService postService;
 
@@ -27,7 +24,7 @@ public class PostController {
         this.postService = postService;
     }
 
-    /*
+    /**
      * 조회
      * */
     @GetMapping("/postlist")
@@ -44,72 +41,45 @@ public class PostController {
         return sb;
     }
 
-    /*
+    /**
     * 상세 조회
     * */
     @GetMapping("/posts/{id}")
     @ResponseBody
-    public String view(@PathVariable("id") Long id) {
-        PostDto dto = postService.getPost(id);
-        String result = dto.toViewString(dto);
-        return result;
+    public ResponseEntity view(@PathVariable("id") Long id) {
+        PostResponseDto responseDto = postService.getPost(id);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    /*
+    /**
     * 등록
     * */
     @PostMapping("/posts")
-    public ResponseEntity write(@RequestBody @Valid PostDto postDto) {
-        // 인증된 사용자 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return new ResponseEntity<>("사용자 정보가 없습니다.", HttpStatus.UNAUTHORIZED);
-        }
-
-        // 사용자 정보 확인
-        User user = ((UserDetailsImpl) authentication.getPrincipal()).getUser();
-
-        PostResponseDto responseDto = postService.savePost(postDto, user);
+    public ResponseEntity write(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody @Valid PostDto postDto) {
+        PostResponseDto responseDto = postService.savePost(postDto, userDetails);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    /*
+    /**
      * 수정
      * */
     @PutMapping("/posts/{id}")
-    public ResponseEntity update(@PathVariable("id") Long id, @RequestBody @Valid PostDto postDto, HttpServletRequest request) {
-
-        // 인증된 사용자 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return new ResponseEntity<>("사용자 정보가 없습니다.", HttpStatus.UNAUTHORIZED);
-        }
-
-        // 사용자 정보 확인
-        User user = ((UserDetailsImpl) authentication.getPrincipal()).getUser();
-        PostResponseDto responseDto = postService.updatePost(postDto, user);
+    public ResponseEntity update(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable("id") Long id, @RequestBody @Valid PostDto postDto) {
+        // 키값 dto에 추가
+        postDto.setId(id);
+        PostResponseDto responseDto = postService.updatePost(postDto, userDetails);
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    /*
+    /**
     * 삭제
     * */
     @DeleteMapping("/posts/{id}")
-    public ResponseEntity delete(@PathVariable("id") Long id, String password, HttpServletRequest request) {
-        PostDto origin = postService.getPost(id);
+    public ResponseEntity delete(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable("id") Long id) {
         String result = "";
 
-        // 인증된 사용자 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return new ResponseEntity<>("사용자 정보가 없습니다.", HttpStatus.UNAUTHORIZED);
-        }
-
-        // 사용자 정보 확인
-        User user = ((UserDetailsImpl) authentication.getPrincipal()).getUser();
-
-        int deleteResult = postService.deletePost(id, user);
+        int deleteResult = postService.deletePost(id, userDetails);
         if (deleteResult > 0) {
             result = "게시글을 삭제하였습니다.";
         } else if (deleteResult == -2) {
@@ -121,7 +91,7 @@ public class PostController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    /**패스워드 체크(사용안함 , 로그인 유저 체크로 역할 변경)
+    /*패스워드 체크(사용안함 , 로그인 유저 체크로 역할 변경)
      *
      * */
 /*    public boolean checkPassword(String originPassword, String newPassword) {

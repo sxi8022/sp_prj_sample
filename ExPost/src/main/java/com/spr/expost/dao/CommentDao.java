@@ -28,6 +28,7 @@ public class CommentDao {
                 .user(dto.getUser())
                 .post(dto.getPost())
                 .likeCount(dto.getLikeCount())
+                .commentLikes(dto.getCommentLikes())
                 .build();
 
         return comments;

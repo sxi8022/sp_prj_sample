@@ -1,8 +1,6 @@
 package com.spr.expost.jwt;
 
-import com.spr.expost.exception.ExtException;
 import com.spr.expost.repository.UserRepository;
-import com.spr.expost.util.CommonErrorCode;
 import com.spr.expost.vo.User;
 import com.spr.expost.vo.UserRoleEnum;
 import io.jsonwebtoken.*;
@@ -12,12 +10,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Locale;
 
 @Slf4j(topic = "JwtUtil")
 @Component
@@ -38,6 +38,8 @@ public class JwtUtil {
     private String secretKey;
     private Key key;
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+
+    private final MessageSource messagesource; // MessageSource  포로퍼티 값을 자동으로 읽어와 bean 생성
 
     @PostConstruct
     public void init() {
@@ -107,12 +109,26 @@ public class JwtUtil {
                 claims = this.getUserInfoFromToken(token);
 
             } else {
-                throw new ExtException(CommonErrorCode.INVALID_TOKEN, null);
+                throw new IllegalArgumentException(
+                        messagesource.getMessage(
+                                "not.found.comment",
+                                null,
+                                "Wrong post",
+                                Locale.getDefault() //기본언어 설정
+                    )
+                );
             }
 
             // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
-            userEntity = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new ExtException(CommonErrorCode.NOT_FOUND_USER, null)
+            userEntity = userRepository.findByUsername(claims.getSubject())
+                    .orElseThrow(
+                            () -> new NullPointerException(messagesource.getMessage(
+                                    "not.found.user",
+                                    null,
+                                    "Wrong post",
+                                    Locale.getDefault() //기본언어 설정
+                            )
+                    )
             );
         }
         return userEntity;

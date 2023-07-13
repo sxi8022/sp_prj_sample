@@ -1,5 +1,6 @@
 package com.spr.expost.board;
 
+import com.spr.expost.dao.PostDao;
 import com.spr.expost.dto.PostDto;
 import com.spr.expost.repository.PostRepository;
 import com.spr.expost.vo.Post;
@@ -60,7 +61,6 @@ public class BoardTest {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .user(post.getUser())
-                .postPassword(post.getPostPassword())
                 .createDate(post.getCreateDate())
                 .updateDate(post.getUpdateDate())
                 .build();
@@ -80,12 +80,12 @@ public class BoardTest {
         String title = "제목 " + uuid;
         String content = "내용 " + uuid ;
         //String author = "작성자" + ((int)(Math.random()*100) + 1);
-        String postPassword = "ko2457#";
+       // String postPassword = "ko2457#";
 
         User user = new User("1","test", "test", UserRoleEnum.USER);
-
-        PostDto post = new PostDto(title, content, user, postPassword);
-        Post data = postRepository.save(post.toEntity());
+        PostDao dao = new PostDao();
+        PostDto postDto = new PostDto(title, content, user);
+        Post data = postRepository.save(dao.toEntity(postDto));
         Long dataKey = data.getId();
         System.out.println("결과값은 " + dataKey);
     }

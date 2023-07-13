@@ -1,23 +1,25 @@
 package com.spr.expost.service;
 
+import com.spr.expost.dao.CommentDao;
 import com.spr.expost.dao.PostDao;
+import com.spr.expost.dto.CommentResponseDto;
 import com.spr.expost.dto.PostDto;
 import com.spr.expost.dto.PostResponseDto;
-import com.spr.expost.exception.ExtException;
+import com.spr.expost.exception.PostNotFoundException;
 import com.spr.expost.jwt.JwtUtil;
 import com.spr.expost.repository.CommentRepository;
+import com.spr.expost.repository.PostLikeRepository;
 import com.spr.expost.repository.PostRepository;
-import com.spr.expost.util.CommonErrorCode;
-import com.spr.expost.vo.Comment;
-import com.spr.expost.vo.Post;
-import com.spr.expost.vo.User;
-import com.spr.expost.vo.UserRoleEnum;
+import com.spr.expost.security.UserDetailsImpl;
+import com.spr.expost.vo.*;
 import jakarta.transaction.Transactional;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -28,21 +30,42 @@ public class PostService {
 
     private final JwtUtil jwtUtil;
 
-    public PostService(PostRepository postRepository, CommentRepository commentRepository, JwtUtil jwtUtil) {
+    private final MessageSource messagesource; // MessageSource  포로퍼티 값을 자동으로 읽어와 bean 생성
+
+
+    private final PostLikeRepository postLikeRepository;
+
+    public PostService(PostRepository postRepository, CommentRepository commentRepository, JwtUtil jwtUtil, MessageSource messagesource, PostLikeRepository postLikeRepository) {
         this.postRepository = postRepository;
         this.commentRepository = commentRepository;
         this.jwtUtil = jwtUtil;
+        this.messagesource = messagesource;
+        this.postLikeRepository = postLikeRepository;
     }
 
     /*
     * 등록
     * */
     @Transactional
-    public PostResponseDto savePost(PostDto postDto, User user) {
+    public PostResponseDto savePost(PostDto postDto, UserDetailsImpl userDetails) {
+        User user = userDetails.getUser();
+        /*
+         * 로그인 검증
+         */
+        if (user == null) {
+            throw new NullPointerException(messagesource.getMessage(
+                    "not.found.user",
+                    null,
+                    "Wrong user",
+                    Locale.getDefault() //기본언어 설정
+            ));
+        }
+
         PostDao dao = new PostDao();
         postDto.setUser(user);
         postDto.setLikeCount(0); // 좋아요 최초 0
         postDto.setViewCount(0); // 조회수 최초 0
+        postDto.setPostLikes(new ArrayList<PostLike>());
         Post post =  postRepository.save(dao.toEntity(postDto));
         PostResponseDto responseDto = dao.ConvertToDto(post);
         return responseDto;
@@ -52,7 +75,20 @@ public class PostService {
     * 수정
     * */
     @Transactional
-    public PostResponseDto updatePost(PostDto postDto, User user) {
+    public PostResponseDto updatePost(PostDto postDto, UserDetailsImpl userDetails) {
+        User user = userDetails.getUser();
+        /*
+         * 로그인 검증
+         */
+        if (user == null) {
+            throw new NullPointerException(messagesource.getMessage(
+                    "not.found.user",
+                    null,
+                    "Wrong user",
+                    Locale.getDefault() //기본언어 설정
+            ));
+        }
+
         PostDao dao = new PostDao();
         postDto.setUser(user);
         // 원래 정보
@@ -60,6 +96,9 @@ public class PostService {
         // 요청할때는 좋아요 조회수를 가져오지않으므로 DB 에서 확인
         postDto.setLikeCount(origin.getLikeCount());
         postDto.setViewCount(origin.getViewCount());
+        // 좋아요 테이블 값 가져오기
+        List<PostLike> postLikes = postLikeRepository.findByPostId(postDto.getId());
+        postDto.setPostLikes(postLikes);
         /*
          * 수정하려고 하는 게시글의 작성자가 본인인지, 관리자 계정으로 수정하려고 하는지 확인.
          *  checkValid 결과 true 면 데이터리턴 아니면 예외 발생
@@ -81,7 +120,14 @@ public class PostService {
      */
     private Post checkValidPost(Long id) {
         return postRepository.findById(id).orElseThrow(
-                () -> new ExtException(CommonErrorCode.NOT_FOUND_POST, null)
+                () -> new PostNotFoundException(
+                        messagesource.getMessage(
+                                "not.found.post",
+                                null,
+                                "Wrong post",
+                                Locale.getDefault() //기본언어 설정
+                        )
+                )
         );
     }
 
@@ -89,16 +135,38 @@ public class PostService {
     * 삭제
     * */
     @Transactional
-    public int deletePost(Long id, User user) {
-        PostDao dao = new PostDao();
+    public int deletePost(Long id, UserDetailsImpl userDetails) {
+        /*
+         * 로그인 검증
+         */
+        User user = userDetails.getUser();
 
-        PostDto postDto = this.getPost(id);
+        if (user == null) {
+            throw new NullPointerException(messagesource.getMessage(
+                    "not.found.user",
+                    null,
+                    "Wrong user",
+                    Locale.getDefault() //기본언어 설정
+            ));
+        }
+
+        PostDao dao = new PostDao();
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new PostNotFoundException(
+                        messagesource.getMessage(
+                                "not.found.post",
+                                null,
+                                "Wrong post",
+                                Locale.getDefault() //기본언어 설정
+                        )
+                )
+        );
 
         /*
          * 삭제하려고 하는 게시글의 작성자가 본인인지, 관리자 계정으로 수정하려고 하는지 확인.
          *  checkValid 결과 true 면 데이터리턴 아니면 예외 발생
          */
-        if (this.checkValidUser(user, dao.toEntity(postDto).getUser())) {
+        if (this.checkValidUser(user, post.getUser())) {
             postRepository.deleteById(id);
             return 1;
         } else {
@@ -131,25 +199,34 @@ public class PostService {
      * 게시글 정보 얻기
      * */
     @Transactional
-    public PostDto getPost(Long id) {
+    public PostResponseDto getPost(Long id) {
         Optional<Post> postWrapper = postRepository.findById(id);
-        PostDto postDto = null;
+        PostResponseDto postResponseDto = null;
+        PostDao dao = new PostDao();
         if (postWrapper.isPresent()) {
            Post post = postWrapper.get();
-            List<Comment> commentList = commentRepository.findCommentsByPostOrderByCreateDateDesc(post);
-
-            postDto = PostDto.builder()
-                    .id(post.getId())
-                    .title(post.getTitle())
-                    .content(post.getContent())
-                    .user(post.getUser())
-                    .createDate(post.getCreateDate())
-                    .updateDate(post.getUpdateDate())
-                    .comments(commentList)
-                    .build();
+           List<Comment> commentList = commentRepository.findCommentsByPostOrderByCreateDateDesc(post);
+            List<CommentResponseDto> commDtoList = new ArrayList<>();
+            CommentDao commDao = new CommentDao();
+            // dto로 치환
+            for (Comment comment: commentList) {
+                CommentResponseDto resDto = commDao.ConvertToDto(comment);
+                commDtoList.add(resDto);
+            }
+           // List<PostLike> postLikes = postLikeRepository.findByPostId(id);
+           postResponseDto = dao.ConvertToDtoWithLists(post, commDtoList);
+        } else {
+           throw new PostNotFoundException(
+                   messagesource.getMessage(
+                           "not.found.post",
+                           null,
+                           "Wrong post",
+                           Locale.getDefault() //기본언어 설정
+                   )
+           );
         }
 
-        return  postDto;
+        return  postResponseDto;
     }
 
     /**
