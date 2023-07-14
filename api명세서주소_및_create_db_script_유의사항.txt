@@ -1,3 +1,10 @@
+- api 명세서 주소 
+
+https://skillazit.tistory.com/126
+
+
+- mysql 데이터베이스 생성구문 
+
 create database boarddb;
 create user 'guest'@'%' identified by 'board247#';
 grant all privileges on boarddb.* to 'guest'@'%';
@@ -29,3 +36,8 @@ VALUES('테스트1', '테스트중입니다','태훈킴', 'ko2457#',now(), 0);
 INSERT INTO boarddb.post
 (title, content, author, post_password, create_date, hit)
 VALUES('테스트2', '테스트 하면서 보람있었습니다','이지킴', 'ko2457#',now(), 0);
+
+
+- 유의사항 
+-  redis 공식홈페이지에서 redis installer를 활용하여 해당 프로그램을 설치해야한다. 
+-   mac os의 경우 redis는 터미널로 다운로드 받아서 설치해야함 

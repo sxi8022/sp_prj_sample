@@ -1,0 +1,818 @@
+{
+	"info": {
+		"_postman_id": "5c77701f-e5f4-4c56-aa08-cdc1a3b3597e",
+		"name": "sparta_board",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9928633"
+	},
+	"item": [
+		{
+			"name": "게시글등록",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzb2JpIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE2ODkzMjE5NTV9.2p2HrSslPpM_DnvTLSFzcKLd3OEVXwv1DSbfhT4mi28",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"테스트제목0714_13\",\r\n    \"content\": \"테스트01내용\",\r\n    \"categories\": [\"드라마\",\"영화\"]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/boards/posts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"boards",
+						"posts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "게시글수정",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzb2JpIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE2ODkzMTAyMzF9.8ZMkmukvcLYfyYhqE2SCO024Y21Jp5rnfvrRhdm3qkY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"테스트개선_좋아요기능완료\",\r\n    \"content\": \"테스트포스트맨완료입니다!!\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/boards/posts/33",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"boards",
+						"posts",
+						"33"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "게시글삭제",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJidXllciIsImF1dGgiOiJVU0VSIiwiZXhwIjoxNjg5MzExNzkxfQ.dA7gzwIMxhNr_gvgq5p6nl-fifqCAcOe_5bQsfK8TBE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "postNo",
+							"value": "13",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "password",
+							"value": "ko2457#",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/boards/posts/9",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"boards",
+						"posts",
+						"9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "게시글조회",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzb2JpIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE2ODkzMTQ0Mzd9.ZVQEpnnjKMjUwsYl6Upf8-iDFU25ip0UDE0ICMGkaac",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/boards/postlist?page=1&size=5&sortBy=createDate&isAsc=false",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"boards",
+						"postlist"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "size",
+							"value": "5"
+						},
+						{
+							"key": "sortBy",
+							"value": "createDate"
+						},
+						{
+							"key": "isAsc",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "게시글상세조회",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzb2JpIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE2ODkzMjE5NTV9.2p2HrSslPpM_DnvTLSFzcKLd3OEVXwv1DSbfhT4mi28",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/boards/posts/54",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"boards",
+						"posts",
+						"54"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "회원가입",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"sobi@gmail.com\",\r\n    \"password\": \"sobi9854#\",\r\n    \"admin\": \"false\",\r\n    \"username\":\"sobi\",\r\n    \"adminToken\":\"7YOc7ZuI64uY7J2YIOq0gOumrOyekCDsvZTrk5zsnoXri4jri6QuIOy3qOq4ieyXkCDso7zsnZjtlZjsl6wg7KO87IS47JqULg==\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "회원가입2번째",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"sobi@gmail.com\",\r\n    \"password\": \"sobi9854#\",\r\n    \"admin\": \"false\",\r\n    \"username\":\"sobi\",\r\n    \"adminToken\":\"7YOc7ZuI64uY7J2YIOq0gOumrOyekCDsvZTrk5zsnoXri4jri6QuIOy3qOq4ieyXkCDso7zsnZjtlZjsl6wg7KO87IS47JqULg==\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "로그인",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\" : \"sobi\",\r\n    \"password\" : \"sobi9854#\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "댓글등록",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzb2JpIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE2ODkzMjE5NTV9.2p2HrSslPpM_DnvTLSFzcKLd3OEVXwv1DSbfhT4mi28",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"parentId\": 0,\r\n    \"content\": \"댓글_52_3\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/boards/posts/54/comments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"boards",
+						"posts",
+						"54",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "댓글수정",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzb2JpIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE2ODkzMTY0NzN9._H0SV9fYYwkLR2Kbn3cCEqYwKqYhhiqPpxxGt8rv2vA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"content\": \"댓글수정완료1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/boards/posts/comments/5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"boards",
+						"posts",
+						"comments",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "댓글삭제",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJidXllciIsImF1dGgiOiJVU0VSIiwiZXhwIjoxNjg5MzE3NTI4fQ.iO7ZFL9o2sWg2a76XYx5WVSNe4aZcaMAQnloCkSkzhY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/boards/posts/comments/21",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"boards",
+						"posts",
+						"comments",
+						"21"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "관리자로그인",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\" : \"admin\",\r\n    \"password\" : \"admin9854#\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "관리자회원가입",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"admin@gmail.com\",\r\n    \"password\": \"admin9854#\",\r\n    \"admin\": \"true\",\r\n    \"username\":\"admin\",\r\n    \"adminToken\":\"7YOc7ZuI64uY7J2YIOq0gOumrOyekCDsvZTrk5zsnoXri4jri6QuIOy3qOq4ieyXkCDso7zsnZjtlZjsl6wg7KO87IS47JqULg==\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "게시글좋아요",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzb2JpIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE2ODkzMjE5NTV9.2p2HrSslPpM_DnvTLSFzcKLd3OEVXwv1DSbfhT4mi28",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\": \"1\",\r\n    \"postId\": \"54\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/boards/posts/likes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"boards",
+						"posts",
+						"likes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "댓글좋아요",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzb2JpIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE2ODkzMjE5NTV9.2p2HrSslPpM_DnvTLSFzcKLd3OEVXwv1DSbfhT4mi28",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\": \"1\",\r\n    \"commentId\": \"23\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/boards/posts/comments/likes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"boards",
+						"posts",
+						"comments",
+						"likes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "게시글좋아요취소",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzb2JpIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE2ODkzMTY0NzN9._H0SV9fYYwkLR2Kbn3cCEqYwKqYhhiqPpxxGt8rv2vA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\": \"1\",\r\n    \"postId\": \"51\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/boards/posts/likes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"boards",
+						"posts",
+						"likes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "댓글좋아요취소",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzb2JpIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE2ODkzMTY0NzN9._H0SV9fYYwkLR2Kbn3cCEqYwKqYhhiqPpxxGt8rv2vA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\": \"1\",\r\n    \"commentId\": \"22\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/boards/posts/comments/likes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"boards",
+						"posts",
+						"comments",
+						"likes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "로그인토큰재발급",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accessToken",
+						"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJidXllciIsImF1dGgiOiJVU0VSIiwiZXhwIjoxNjg5MzAwNjY4fQ.gEXAallF87ZdDNoQ50eDU6o_psrJuTxRRB8YBDgSjDg",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "refreshToken",
+						"value": "eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODkzMDQyNjh9.fxenO138AajAeCKuy6JzqMMyRSGV6YhTBYYrvi8ONog",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"accessToken\" : \"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJidXllciIsImF1dGgiOiJVU0VSIiwiZXhwIjoxNjg5MzAzNDk5fQ.v_f6RHxvAuUw2NYZxZdxRBdCTvux9T1C3TKzmiIvvro\",\r\n    \"refreshToken\" : \"eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODkzMDcwOTl9.6MsHvLMt-UwgN007---Y9--ujP7EaHGvJtwgGVMW85Q\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/reissue",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"reissue"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "로그아웃",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJidXllciIsImF1dGgiOiJVU0VSIiwiZXhwIjoxNjg5MzIxNzc5fQ.WXt08FubBQDg-61_lni2ZBPm9aisKMDlLXcwc4llP24",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/user/logout",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "게시글카테고리별조회",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzb2JpIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE2ODkzMTQ0Mzd9.ZVQEpnnjKMjUwsYl6Upf8-iDFU25ip0UDE0ICMGkaac",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/boards/postlist/categories?page=1&size=5&sortBy=createDate&isAsc=false&categoryName=액션",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"boards",
+						"postlist",
+						"categories"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "size",
+							"value": "5"
+						},
+						{
+							"key": "sortBy",
+							"value": "createDate"
+						},
+						{
+							"key": "isAsc",
+							"value": "false"
+						},
+						{
+							"key": "categoryName",
+							"value": "액션"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "회원탈퇴",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzb2JpIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE2ODkzMjE5NTV9.2p2HrSslPpM_DnvTLSFzcKLd3OEVXwv1DSbfhT4mi28",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/user/leave",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"leave"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
