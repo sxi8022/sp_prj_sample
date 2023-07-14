@@ -1,6 +1,5 @@
 package com.spr.expost.service;
 
-import com.spr.expost.dao.CommentDao;
 import com.spr.expost.dao.PostDao;
 import com.spr.expost.dto.CommentResponseDto;
 import com.spr.expost.dto.PostDto;
@@ -18,7 +17,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 @Service
 public class PostService {
@@ -77,7 +79,7 @@ public class PostService {
                 postCategoryRepository.save(new PostCategory(post, existCategory.get()));
             }
         }
-        PostResponseDto responseDto = dao.ConvertToDto(post);
+        PostResponseDto responseDto = dao.ConvertToDtoWithCategories(post, categories);
         return responseDto;
     }
 
@@ -91,26 +93,14 @@ public class PostService {
         PostDao dao = new PostDao();
         if (postWrapper.isPresent()) {
             Post post = postWrapper.get();
-            List<Comment> commentList = commentRepository.findAllByPost(post);
-            List<CommentResponseDto> commDtoList = new ArrayList<>();
-            CommentDao commDao = new CommentDao();
-            Map<Long, CommentResponseDto> map = new HashMap<>();
-
-            // dto로 치환
-            for (Comment item : commentList) {
-                CommentResponseDto resDto = commDao.ConvertToDtoWithParent(item);
-                if (item.getParent() == null) {
-                    commDtoList.add(resDto);
-                }
-            }
+            List<CommentResponseDto> commentList = commentRepository.findAllByPost(post);
 
             // 좋아요 테이블 값 가져오기
-            List<PostLike> postLikes = postLikeRepository.findByPostId(post.getId());
-            PostResponseDto dto = dao.ConvertToDto(post);
-            // dto.setComments(commDtoList);
+            // List<PostLike> postLikes = postLikeRepository.findAllByPostId(post.getId());
+            PostResponseDto responseDto = dao.ConvertToDtoWithLists(post, commentList);
+           // responseDto.setComments(commentList);
             // dto.setPostLikes(postLikes);
-            return dto;
-
+            return responseDto;
         } else {
             throw new PostNotFoundException(
                     messagesource.getMessage(
@@ -184,7 +174,7 @@ public class PostService {
         postDto.setLikeCount(origin.getLikeCount());
         postDto.setViewCount(origin.getViewCount());
         // 좋아요 테이블 값 가져오기
-        List<PostLike> postLikes = postLikeRepository.findByPostId(postDto.getId());
+        List<PostLike> postLikes = postLikeRepository.findAllByPostId(postDto.getId());
         postDto.setPostLikes(postLikes);
         /*
          * 수정하려고 하는 게시글의 작성자가 본인인지, 관리자 계정으로 수정하려고 하는지 확인.

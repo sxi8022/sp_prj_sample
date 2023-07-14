@@ -29,4 +29,8 @@ public class CommentResponseDto {
     public void setParentId(Long parentId) {
         this.parentId = parentId;
     }
+
+    public void setChildren(List<CommentResponseDto> children) {
+        this.children = children;
+    }
 }

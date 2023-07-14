@@ -4,7 +4,6 @@ import com.spr.expost.dto.CommentResponseDto;
 import com.spr.expost.dto.PostDto;
 import com.spr.expost.dto.PostResponseDto;
 import com.spr.expost.vo.Post;
-import com.spr.expost.vo.PostLike;
 
 import java.util.List;
 
@@ -22,11 +21,24 @@ public class PostDao {
                 .build();
     }
 
+    public PostResponseDto ConvertToDtoWithCategories(Post post, List<String> categories) {
+        return PostResponseDto.builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .updateDate(post.getUpdateDate())
+                .createDate(post.getCreateDate())
+                .likeCount(post.getLikeCount())
+                .viewCount(post.getViewCount())
+                .categories(categories)
+                .build();
+    }
+
     /*
     * commentList : 댓글 목록
     * postLikes : 좋아요 목록
     * */
-    public PostResponseDto ConvertToDtoWithLists(Post post, List<CommentResponseDto> commentList, List<PostLike> postLikes) {
+    public PostResponseDto ConvertToDtoWithLists(Post post, List<CommentResponseDto> commentList) {
         return PostResponseDto.builder()
                 .id(post.getId())
                 .title(post.getTitle())
@@ -36,7 +48,7 @@ public class PostDao {
                 .likeCount(post.getLikeCount())
                 .viewCount(post.getViewCount())
                 .comments(commentList)
-                .postLikes(postLikes)
+                //.postLikes(postLikes)
                 .build();
     }
 

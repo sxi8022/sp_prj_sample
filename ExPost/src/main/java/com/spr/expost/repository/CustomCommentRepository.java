@@ -1,5 +1,6 @@
 package com.spr.expost.repository;
 
+import com.spr.expost.dto.CommentResponseDto;
 import com.spr.expost.vo.Comment;
 import com.spr.expost.vo.Post;
 
@@ -14,5 +15,5 @@ public interface CustomCommentRepository {
     void subLikeCount(Comment comment);
 
     // 게시글의 댓글 찾기
-    List<Comment> findAllByPost(Post post);
+    List<CommentResponseDto> findAllByPost(Post post);
 }
