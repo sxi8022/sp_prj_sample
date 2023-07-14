@@ -4,11 +4,19 @@ import com.spr.expost.dto.CommentResponseDto;
 import com.spr.expost.dto.PostDto;
 import com.spr.expost.dto.PostResponseDto;
 import com.spr.expost.vo.Post;
+import com.spr.expost.vo.PostCategory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PostDao {
     public PostResponseDto ConvertToDto(Post post) {
+        List<PostCategory> postCategoryList = post.getPostCategoryList();
+        List<String> categoryStringList = new ArrayList<>();
+        for (PostCategory postCategory : postCategoryList) {
+            categoryStringList.add(postCategory.getCategory().getName());
+        }
+
         return PostResponseDto.builder()
                 .id(post.getId())
                 .title(post.getTitle())
@@ -17,7 +25,7 @@ public class PostDao {
                 .createDate(post.getCreateDate())
                 .likeCount(post.getLikeCount())
                 .viewCount(post.getViewCount())
-                // .categories(post.getPostCategoryList().get)
+                .categories(categoryStringList)
                 .build();
     }
 
@@ -90,6 +98,7 @@ public class PostDao {
                 .viewCount(postDto.getViewCount())
                 .user(postDto.getUser())
                 .postLikes(postDto.getPostLikes())
+                .postCategoryList(postDto.getPostCategoryList())
                 .build();
         return build;
     }

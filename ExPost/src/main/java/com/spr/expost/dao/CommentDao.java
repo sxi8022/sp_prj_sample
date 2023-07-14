@@ -19,6 +19,7 @@ public class CommentDao {
                 .postId(comment.getPost().getId())
                 .postTitle(comment.getPost().getTitle())
                 .likeCount(comment.getLikeCount())
+                .username(comment.getUser().getUsername())
                 .build();
     }
 
@@ -34,6 +35,7 @@ public class CommentDao {
                 .postId(comment.getPost().getId())
                 .postTitle(comment.getPost().getTitle())
                 .likeCount(comment.getLikeCount())
+                .username(comment.getUser().getUsername())
                 .parentId(comment.getParent() == null ? 0 : comment.getParent().getId())
                 .children(comment.getChildren() == null ? new ArrayList<CommentResponseDto>() : comment.getChildren().stream().map(v -> dao.ConvertToDto(v)).toList())
                 .build();

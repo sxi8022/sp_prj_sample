@@ -9,6 +9,7 @@ import com.spr.expost.util.redis.TokenDto;
 import com.spr.expost.vo.User;
 import com.spr.expost.vo.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -39,6 +41,8 @@ public class UserService {
     private final JwtUtil jwtUtil;
     private final RedisTemplate redisTemplate;
     private final HttpResponseDto responseDto;
+
+    private final MessageSource messagesource; // MessageSource  포로퍼티 값을 자동으로 읽어와 bean 생성
 
     /*
     * 회원가입
@@ -148,6 +152,26 @@ public class UserService {
         return responseDto.success(tokenInfo, "Token 정보가 갱신되었습니다.", HttpStatus.OK);
     }
 
+    // 회원 탈퇴
+    public ResponseEntity<String> leave(User user) {
+        if (user == null) {
+            throw new NullPointerException(
+                    messagesource.getMessage(
+                            "not.found.user",
+                            null,
+                            "error",
+                            Locale.getDefault() //기본언어 설정
+                    )
+            );
+        }
 
+        userRepository.delete(user);
+        return new ResponseEntity<>(messagesource.getMessage(
+                "complete.user.leave",
+                null,
+                "complete",
+                Locale.getDefault() //기본언어 설정
+        ),HttpStatus.OK);
+    }
 
 }

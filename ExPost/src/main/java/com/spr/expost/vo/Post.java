@@ -61,20 +61,20 @@ public class Post extends Timestamped{
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostLike> postLikes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post", orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostCategory> postCategoryList = new ArrayList<>();
 
 
     @Builder
-    public Post(Long id,String title, String content, User user, int likeCount, int viewCount, List<PostLike> postLikes) {
+    public Post(Long id,String title, String content, User user, int likeCount, int viewCount, List<PostLike> postLikes,  List<PostCategory> postCategoryList) {
         this.id = id;
         this.title = title;
         this.content = content;
-        // this.postPassword = postPassword;
         this.user = user;
         this.likeCount = likeCount;
         this.viewCount = viewCount;
         this.postLikes = postLikes;
+        this.postCategoryList = postCategoryList;
     }
 
     public void setId(Long id) {

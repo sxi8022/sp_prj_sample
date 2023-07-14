@@ -69,14 +69,15 @@ public class PostService {
         postDto.setPostLikes(new ArrayList<PostLike>());
         Post post = postRepository.save(dao.toEntity(postDto));
         List<String> categories = postDto.getCategories();
+
         // 게시글별 카테고리  테이블에 추가
         for (String categoryName : categories) {
-            Category category = new Category(categoryName);
-            Optional<Category> existCategory = categoryRepository.findByName(categoryName);
-            if (existCategory.isEmpty()) {
-                postCategoryRepository.save(new PostCategory(post, category));
-            } else {
-                postCategoryRepository.save(new PostCategory(post, existCategory.get()));
+            Optional<Category> originCategory = categoryRepository.findByName(categoryName);
+            if (originCategory.isEmpty()){
+                postCategoryRepository.save(new PostCategory(post, categoryName));
+            }
+            else{
+                postCategoryRepository.save(new PostCategory(post, originCategory.get()));
             }
         }
         PostResponseDto responseDto = dao.ConvertToDtoWithCategories(post, categories);
@@ -87,20 +88,31 @@ public class PostService {
      * 게시글 정보 얻기
      * */
     @Transactional
-    public PostResponseDto getPost (Long id) {
+    public PostResponseDto getPost(Long id) {
         Optional<Post> postWrapper = postRepository.findById(id);
         PostResponseDto postResponseDto;
         PostDao dao = new PostDao();
         if (postWrapper.isPresent()) {
             Post post = postWrapper.get();
             List<CommentResponseDto> commentList = commentRepository.findAllByPost(post);
-
-            // 좋아요 테이블 값 가져오기
-            // List<PostLike> postLikes = postLikeRepository.findAllByPostId(post.getId());
+            // dto로 리턴
             PostResponseDto responseDto = dao.ConvertToDtoWithLists(post, commentList);
-           // responseDto.setComments(commentList);
-            // dto.setPostLikes(postLikes);
-            return responseDto;
+
+            // 조회수 증가
+            int viewCountResult = postRepository.addViewCount(post);
+            if (viewCountResult > 0) {
+                responseDto.setViewCount(responseDto.getViewCount()+1);
+                return responseDto;
+            } else {
+                throw new IllegalArgumentException(
+                        messagesource.getMessage(
+                                "create.error.runtime",
+                                null,
+                                "error",
+                                Locale.getDefault() //기본언어 설정
+                        )
+                );
+            }
         } else {
             throw new PostNotFoundException(
                     messagesource.getMessage(
@@ -117,8 +129,8 @@ public class PostService {
      * 조회
      * */
     @Transactional
-    public Page<PostResponseDto> getPostList (UserDetailsImpl userDetails,int page, int size, String sortBy,
-                                              boolean isAsc){
+    public Page<PostResponseDto> getPostList(UserDetailsImpl userDetails, int page, int size, String sortBy,
+                                             boolean isAsc) {
         User user = userDetails.getUser();
 
         if (user == null) {
@@ -147,6 +159,29 @@ public class PostService {
         return resultDtoList;
     }
 
+    /*
+     * 카테고리별 조회
+     * */
+    public Page<PostResponseDto> getPostListByCategory(int page, int size, String sortBy, boolean isAsc, String categoryName) {
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Category vo = categoryRepository.findByName(categoryName)
+                .orElseThrow(() -> new IllegalArgumentException(messagesource.getMessage(
+                                "not.found.category.post",
+                                null,
+                                "Wrong category",
+                                Locale.getDefault() //기본언어 설정
+                        )
+                        )
+                );
+        PostDao dao = new PostDao();
+
+        List<Long> postIdList = postCategoryRepository.findAllByCategory(vo)
+                .stream().map(category -> category.getPost().getId()).toList();
+        return postRepository.findAllByIdIn(postIdList, pageable).map(v->dao.ConvertToDto(v));
+    }
+
 
     /*
      * 수정
@@ -166,6 +201,19 @@ public class PostService {
             ));
         }
 
+        // 수정 시 카테고리가 한건도없으면 시스템 에러
+        List<Category> mainCategories = categoryRepository.findAll();
+        if (mainCategories == null || mainCategories.size() == 0) {
+            throw new IllegalArgumentException(
+                    messagesource.getMessage(
+                            "not.found.category.post.ask.manager",
+                            null,
+                            "category",
+                            Locale.getDefault() //기본언어 설정
+                    )
+            );
+        }
+
         PostDao dao = new PostDao();
         postDto.setUser(user);
         // 원래 정보
@@ -173,6 +221,7 @@ public class PostService {
         // 요청할때는 좋아요 조회수를 가져오지않으므로 DB 에서 확인
         postDto.setLikeCount(origin.getLikeCount());
         postDto.setViewCount(origin.getViewCount());
+        postDto.setPostCategoryList(origin.getPostCategoryList());
         // 좋아요 테이블 값 가져오기
         List<PostLike> postLikes = postLikeRepository.findAllByPostId(postDto.getId());
         postDto.setPostLikes(postLikes);
@@ -182,19 +231,8 @@ public class PostService {
          */
         PostResponseDto responseDto;
         if (this.checkValidUser(user, origin.getUser())) {
-            Post vo = dao.toUpdateEntity(postDto);
-            List<String> categories = postDto.getCategories();
-            // 게시글별 카테고리  테이블에 추가
-            for (String categoryName : categories) {
-                Category category = new Category(categoryName);
-                Optional<Category> existCategory = categoryRepository.findByName(categoryName);
-                if (existCategory.isEmpty()) {
-                    postCategoryRepository.save(new PostCategory(vo, category));
-                } else {
-                    postCategoryRepository.save(new PostCategory(vo, existCategory.get()));
-                }
-            }
-            Post result = postRepository.save(vo);
+            Post post = dao.toUpdateEntity(postDto);
+            Post result = postRepository.save(post);
             responseDto = dao.ConvertToDto(result);
         } else {
             throw new IllegalArgumentException(
@@ -214,7 +252,7 @@ public class PostService {
      * 삭제
      * */
     @Transactional
-    public int deletePost (Long id, UserDetailsImpl userDetails){
+    public int deletePost(Long id, UserDetailsImpl userDetails) {
         /*
          * 로그인 검증
          */
@@ -252,8 +290,6 @@ public class PostService {
             return -2;
         }
     }
-
-
 
 
     /**

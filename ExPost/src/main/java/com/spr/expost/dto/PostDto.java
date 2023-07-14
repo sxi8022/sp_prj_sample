@@ -1,6 +1,7 @@
 package com.spr.expost.dto;
 
 import com.spr.expost.vo.Comment;
+import com.spr.expost.vo.PostCategory;
 import com.spr.expost.vo.PostLike;
 import com.spr.expost.vo.User;
 import lombok.*;
@@ -38,8 +39,15 @@ public class PostDto {
 
     private List<String> categories;
 
+
+    private List<PostCategory> postCategoryList;
+
     public void setPostLikes(List<PostLike> postLikes) {
         this.postLikes = postLikes;
+    }
+
+    public void setPostCategoryList(List<PostCategory> postCategoryList) {
+        this.postCategoryList = postCategoryList;
     }
 
     @Builder

@@ -44,4 +44,9 @@ public class PostResponseDto {
     public void setPostLikes(List<PostLike> postLikes) {
         this.postLikes = postLikes;
     }
+
+
+    public void setViewCount(Integer viewCount) {
+        this.viewCount = viewCount;
+    }
 }

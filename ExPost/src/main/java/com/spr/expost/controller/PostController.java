@@ -41,6 +41,21 @@ public class PostController {
     }
 
     /**
+     * 카테고리별 조회
+     * */
+    @GetMapping("/postlist/categories")
+    public ResponseEntity listByCategory(
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam("sortBy") String sortBy,
+            @RequestParam("isAsc") boolean isAsc,
+            @RequestParam("categoryName") String categoryName
+    ){
+        Page<PostResponseDto> postDtoList = postService.getPostListByCategory(page-1, size, sortBy, isAsc, categoryName);
+        return new ResponseEntity<>(postDtoList, HttpStatus.OK);
+    }
+
+    /**
     * 상세 조회
     * */
     @GetMapping("/posts/{id}")

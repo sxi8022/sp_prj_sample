@@ -33,4 +33,14 @@ public class PostRepositoryImpl implements CustomPostRepository {
                 .where(post.eq(selectedPost))
                 .execute();
     }
+
+    @Override
+    public int addViewCount(Post selectedPost) {
+        // 조회수 올리기
+        long result = queryFactory.update(post)
+                .set(post.viewCount, selectedPost.getViewCount()+1)
+                .where(post.id.eq(selectedPost.getId()))
+                .execute();
+        return (int) result;
+    }
 }

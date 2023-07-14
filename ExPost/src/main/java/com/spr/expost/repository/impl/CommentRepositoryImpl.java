@@ -44,6 +44,7 @@ public class CommentRepositoryImpl implements CustomCommentRepository {
     @Override
     public List<CommentResponseDto> findAllByPost(Post post){
 
+        // 댓글 정보 dto로 변환에서 부모 댓글 리스트로 생성후 자식댓글들을 연결
         ArrayList<Comment> comments = (ArrayList<Comment>) queryFactory.selectFrom(comment)
                 .leftJoin(comment.parent)
                 .fetchJoin()
