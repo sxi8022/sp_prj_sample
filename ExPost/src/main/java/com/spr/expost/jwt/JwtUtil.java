@@ -1,6 +1,7 @@
 package com.spr.expost.jwt;
 
 import com.spr.expost.repository.UserRepository;
+import com.spr.expost.util.redis.TokenDto;
 import com.spr.expost.vo.User;
 import com.spr.expost.vo.UserRoleEnum;
 import io.jsonwebtoken.*;
@@ -11,13 +12,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.security.Key;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Locale;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j(topic = "JwtUtil")
 @Component
@@ -29,8 +33,10 @@ public class JwtUtil {
     public static final String AUTHORIZATION_KEY = "auth";
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
-    // 토큰 만료시간
-    private final long TOKEN_TIME = 60 * 60 * 1000L; // 60분
+    // 엑세스 토큰 만료시간
+    private final long ACCESS_TOKEN_EXPIRE_TIME = 60 * 60 * 1000L; // 60분
+    // refresh 토큰 만료시간
+    private static final long REFRESH_TOKEN_EXPIRE_TIME =  2 * 60 * 60 * 1000L;    // 2시간
 
     private final UserRepository userRepository;
 
@@ -48,7 +54,7 @@ public class JwtUtil {
     }
 
     // 토큰 생성
-    public String createToken(String username, UserRoleEnum role) {
+    /*public String createToken(String username, UserRoleEnum role) {
         Date date = new Date();
 
         return BEARER_PREFIX +
@@ -59,6 +65,32 @@ public class JwtUtil {
                         .setIssuedAt(date) // 발급일
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘
                         .compact();
+    }*/
+    // refresh 토큰, access토큰 분리하여 생성
+    public TokenDto.TokenInfo createToken(Authentication authentication, UserRoleEnum role) {
+        long now = (new Date()).getTime();
+
+        // Access Token 생성
+        Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
+        String accessToken = Jwts.builder()
+                .setSubject(authentication.getName())
+                .claim(AUTHORIZATION_KEY, role)
+                .setExpiration(accessTokenExpiresIn)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
+        // Refresh Token 생성
+        String refreshToken = Jwts.builder()
+                .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
+        return TokenDto.TokenInfo.builder()
+                .grantType(BEARER_PREFIX)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .refreshTokenExpirationTime(REFRESH_TOKEN_EXPIRE_TIME)
+                .build();
     }
 
     // header 에서 JWT 가져오기
@@ -132,5 +164,51 @@ public class JwtUtil {
             );
         }
         return userEntity;
+    }
+
+    // JWT 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
+    public Authentication getAuthentication(String accessToken) {
+        // 토큰 복호화
+        Claims claims = parseClaims(accessToken);
+
+        if (claims.get(AUTHORIZATION_KEY) == null) {
+            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+        }
+
+        // 클레임에서 권한 정보 가져오기
+        Collection<? extends GrantedAuthority> authorities =
+                Arrays.stream(claims.get(AUTHORIZATION_KEY).toString().split(","))
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
+        User userEntity = null;
+        // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
+        userEntity = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+                () -> new RuntimeException()
+        );
+
+        return new UsernamePasswordAuthenticationToken(
+                userEntity.getUsername(),
+                userEntity.getPassword(),
+                authorities
+        );
+    }
+
+
+    // Claim 정보 파악
+    private Claims parseClaims(String accessToken) {
+        try {
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
+    }
+
+    // jwt 유효기간 체크
+    public Long getExpiration(String accessToken) {
+        // accessToken 남은 유효시간
+        Date expiration = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody().getExpiration();
+        // 현재 시간
+        Long now = new Date().getTime();
+        return (expiration.getTime() - now);
     }
 }
