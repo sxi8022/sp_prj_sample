@@ -1,6 +1,6 @@
 package com.spr.expost.board;
 
-import com.spr.expost.repository.PostRepository;
+import com.spr.expost.post.repository.PostRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
