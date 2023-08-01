@@ -2,7 +2,7 @@ package com.spr.expost.post.service;
 
 import com.spr.expost.common.dto.ApiResponseDto;
 import com.spr.expost.post.dto.PostLikeRequestDto;
-import com.spr.expost.common.exception.PostNotFoundException;
+import com.spr.expost.exception.PostNotFoundException;
 import com.spr.expost.post.repository.PostLikeRepository;
 import com.spr.expost.post.repository.PostRepository;
 import com.spr.expost.user.repository.UserRepository;
@@ -68,7 +68,6 @@ public class PostLikeService {
                 .build();
 
         likeRepository.save(like);
-        postRepository.addLikeCount(post); // CustomPostRepository 메소드를 상속받아 수행
         return ResponseEntity.ok().body(new ApiResponseDto("성공", HttpStatus.OK.value()));
     }
 
@@ -112,6 +111,5 @@ public class PostLikeService {
                 );
 
         likeRepository.delete(like);
-        postRepository.subLikeCount(post); // 상속받은 클래스에서 수행
     }
 }

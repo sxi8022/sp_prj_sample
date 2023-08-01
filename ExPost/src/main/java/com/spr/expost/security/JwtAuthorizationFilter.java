@@ -1,6 +1,6 @@
-package com.spr.expost.common.security;
+package com.spr.expost.security;
 
-import com.spr.expost.common.jwt.JwtUtil;
+import com.spr.expost.jwt.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

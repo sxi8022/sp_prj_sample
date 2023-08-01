@@ -1,7 +1,7 @@
-package com.spr.expost.common.jwt;
+package com.spr.expost.jwt;
 
-import com.spr.expost.common.util.redis.TokenDto;
-import com.spr.expost.common.util.redis.TokenDto.TokenInfo;
+import com.spr.expost.util.redis.TokenDto;
+import com.spr.expost.util.redis.TokenDto.TokenInfo;
 import com.spr.expost.user.repository.UserRepository;
 import com.spr.expost.user.vo.User;
 import com.spr.expost.user.vo.UserRoleEnum;

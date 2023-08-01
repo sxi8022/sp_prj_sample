@@ -1,6 +1,7 @@
-package com.spr.expost.common.exception;
+package com.spr.expost.exception;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import java.util.concurrent.RejectedExecutionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,6 +20,17 @@ public class GlobalExceptionHandler {
                 restApiException,
                 // HTTP status code
                 HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler({RejectedExecutionException.class})
+    public ResponseEntity<RestApiException> rejectedExecutionExceptionExceptionHandler(RejectedExecutionException ex) {
+        RestApiException restApiException = new RestApiException(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(
+            // HTTP body
+            restApiException,
+            // HTTP status code
+            HttpStatus.BAD_REQUEST
         );
     }
 

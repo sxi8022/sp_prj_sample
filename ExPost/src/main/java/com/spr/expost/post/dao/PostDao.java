@@ -1,7 +1,7 @@
 package com.spr.expost.post.dao;
 
 import com.spr.expost.comment.dto.CommentResponseDto;
-import com.spr.expost.post.dto.PostDto;
+import com.spr.expost.post.dto.PostRequestDto;
 import com.spr.expost.post.dto.PostResponseDto;
 import com.spr.expost.post.vo.Post;
 import com.spr.expost.post.vo.PostCategory;
@@ -23,7 +23,7 @@ public class PostDao {
                 .content(post.getContent())
                 .updateDate(post.getUpdateDate())
                 .createDate(post.getCreateDate())
-                .likeCount(post.getLikeCount())
+                .likeCount(post.getPostLikes().size())
                 .viewCount(post.getViewCount())
                 .categories(categoryStringList)
                 .build();
@@ -36,7 +36,7 @@ public class PostDao {
                 .content(post.getContent())
                 .updateDate(post.getUpdateDate())
                 .createDate(post.getCreateDate())
-                .likeCount(post.getLikeCount())
+                .likeCount(post.getPostLikes().size())
                 .viewCount(post.getViewCount())
                 .categories(categories)
                 .build();
@@ -53,65 +53,19 @@ public class PostDao {
                 .content(post.getContent())
                 .updateDate(post.getUpdateDate())
                 .createDate(post.getCreateDate())
-                .likeCount(post.getLikeCount())
+                .likeCount(post.getPostLikes().size())
                 .viewCount(post.getViewCount())
                 .comments(commentList)
                 //.postLikes(postLikes)
                 .build();
     }
 
-    public Post toEntity(PostDto postDto) {
+    public Post toEntity(PostRequestDto postDto) {
         Post build = Post.builder()
-                //.author(author)
                 .title(postDto.getTitle())
                 .content(postDto.getContent())
-                //.postPassword(postPassword)
                 .user(postDto.getUser())
-                .likeCount(postDto.getLikeCount())
-                .viewCount(postDto.getViewCount())
-                .postLikes(postDto.getPostLikes())
                 .build();
         return build;
     }
-
-    public Post responseToEntity(PostResponseDto responseDto) {
-        Post build = Post.builder()
-                //.author(author)
-                .title(responseDto.getTitle())
-                .content(responseDto.getContent())
-                //.postPassword(postPassword)
-                .user(responseDto.getUser())
-                .likeCount(responseDto.getLikeCount())
-                .viewCount(responseDto.getViewCount())
-                .postLikes(responseDto.getPostLikes())
-                .build();
-        return build;
-    }
-
-    public Post toUpdateEntity(PostDto postDto) {
-        Post build = Post.builder()
-                .id(postDto.getId())
-                //.author(author)
-                .title(postDto.getTitle())
-                .content(postDto.getContent())
-                .likeCount(postDto.getLikeCount())
-                .viewCount(postDto.getViewCount())
-                .user(postDto.getUser())
-                .postLikes(postDto.getPostLikes())
-                .postCategoryList(postDto.getPostCategoryList())
-                .build();
-        return build;
-    }
-
-    /*
-    *  조회수 추가
-    * */
-    public PostDto addViewCount(PostDto postDto) {
-        postDto.setViewCount(postDto.getViewCount() + 1);
-
-       return postDto;
-    }
-
-
-
 }

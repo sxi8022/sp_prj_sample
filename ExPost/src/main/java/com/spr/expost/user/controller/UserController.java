@@ -2,7 +2,7 @@ package com.spr.expost.user.controller;
 
 import com.spr.expost.user.dto.SignupRequestDto;
 import com.spr.expost.user.dto.UserRequestDto;
-import com.spr.expost.common.security.UserDetailsImpl;
+import com.spr.expost.security.UserDetailsImpl;
 import com.spr.expost.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

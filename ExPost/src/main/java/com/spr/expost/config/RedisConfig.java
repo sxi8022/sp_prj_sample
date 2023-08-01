@@ -1,4 +1,4 @@
-package com.spr.expost.common.config;
+package com.spr.expost.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

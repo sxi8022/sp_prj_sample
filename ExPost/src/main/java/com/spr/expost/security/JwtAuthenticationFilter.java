@@ -1,10 +1,10 @@
-package com.spr.expost.common.security;
+package com.spr.expost.security;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spr.expost.user.dto.LoginRequestDto;
-import com.spr.expost.common.jwt.JwtUtil;
-import com.spr.expost.common.util.redis.TokenDto;
+import com.spr.expost.jwt.JwtUtil;
+import com.spr.expost.util.redis.TokenDto;
 import com.spr.expost.user.vo.UserRoleEnum;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;

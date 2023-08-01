@@ -22,25 +22,7 @@ import java.util.stream.Collectors;
 public class CommentRepositoryImpl implements CustomCommentRepository {
 
     private final JPAQueryFactory queryFactory;
-
-    // 좋아요
-    @Override
-    public void addLikeCount(Comment selectedComment) {
-        queryFactory.update(comment)
-                .set(comment.likeCount, comment.likeCount.add(1))
-                .where(comment.eq(selectedComment))
-                .execute();
-    }
-
-    // 좋아요 취소
-    @Override
-    public void subLikeCount(Comment selectedComment) {
-        queryFactory.update(comment)
-                .set(comment.likeCount, comment.likeCount.subtract(1))
-                .where(comment.eq(selectedComment))
-                .execute();
-    }
-
+    
     // 게시글의 댓글 전체 가져오기
     @Override
     public List<CommentResponseDto> findAllByPost(Post post){

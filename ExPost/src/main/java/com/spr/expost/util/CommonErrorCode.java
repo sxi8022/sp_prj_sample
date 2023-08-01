@@ -1,4 +1,4 @@
-package com.spr.expost.common.util;
+package com.spr.expost.util;
 
 
 import lombok.Getter;

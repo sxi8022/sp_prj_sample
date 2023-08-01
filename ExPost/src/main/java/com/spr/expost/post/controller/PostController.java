@@ -1,8 +1,8 @@
 package com.spr.expost.post.controller;
 
-import com.spr.expost.post.dto.PostDto;
+import com.spr.expost.post.dto.PostRequestDto;
 import com.spr.expost.post.dto.PostResponseDto;
-import com.spr.expost.common.security.UserDetailsImpl;
+import com.spr.expost.security.UserDetailsImpl;
 import com.spr.expost.post.service.PostService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -69,7 +69,7 @@ public class PostController {
     * 등록
     * */
     @PostMapping("/posts")
-    public ResponseEntity write(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody @Valid PostDto postDto) {
+    public ResponseEntity write(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody @Valid PostRequestDto postDto) {
         PostResponseDto responseDto = postService.savePost(postDto, userDetails);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
@@ -78,10 +78,10 @@ public class PostController {
      * 수정
      * */
     @PutMapping("/posts/{id}")
-    public ResponseEntity update(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable("id") Long id, @RequestBody @Valid PostDto postDto) {
+    public ResponseEntity update(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable("id") Long id, @RequestBody @Valid PostRequestDto postRequestDto) {
         // 키값 dto에 추가
-        postDto.setId(id);
-        PostResponseDto responseDto = postService.updatePost(postDto, userDetails);
+        postRequestDto.setId(id);
+        PostResponseDto responseDto = postService.updatePost(postRequestDto, userDetails);
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
@@ -96,9 +96,7 @@ public class PostController {
         int deleteResult = postService.deletePost(id, userDetails);
         if (deleteResult > 0) {
             result = "게시글을 삭제하였습니다.";
-        } else if (deleteResult == -2) {
-            result = "삭제하려는 게시글이 본인이 아니거나, 관리자가 아닙니다.";
-        }  else {
+        } else {
             result = "삭제되지 않았습니다.";
         }
 

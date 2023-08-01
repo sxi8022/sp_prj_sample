@@ -18,4 +18,6 @@ public interface PostRepository extends JpaRepository<Post, Long>, CustomPostRep
 
     // 카테고리 페이지별 조회 (검색한카테고리에 해당하는 postId를 모아 검색)
     Page<Post> findAllByIdIn(List<Long> postIdList, Pageable pageable);
+
+    User findPostById(Long postId);
 }

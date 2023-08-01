@@ -1,4 +1,4 @@
-package com.spr.expost.common.security;
+package com.spr.expost.security;
 
 import com.spr.expost.user.vo.User;
 import com.spr.expost.user.vo.UserRoleEnum;

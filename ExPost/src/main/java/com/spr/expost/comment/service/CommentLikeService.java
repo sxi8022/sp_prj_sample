@@ -65,7 +65,6 @@ public class CommentLikeService {
                 .build();
 
         likeRepository.save(like);
-        commentRepository.addLikeCount(comment); // CustomPostRepository 메소드를 상속받아 수행
         return ResponseEntity.ok().body(new ApiResponseDto("성공", HttpStatus.OK.value()));
     }
 
@@ -109,6 +108,5 @@ public class CommentLikeService {
                 );
         
         likeRepository.delete(like);
-        commentRepository.subLikeCount(comment); // 상속받은 클래스에서 수행
     }
 }

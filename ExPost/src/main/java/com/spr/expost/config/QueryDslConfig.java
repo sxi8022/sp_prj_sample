@@ -1,4 +1,4 @@
-package com.spr.expost.common.config;
+package com.spr.expost.config;
 
 
 import com.querydsl.jpa.impl.JPAQueryFactory;

@@ -1,4 +1,4 @@
-package com.spr.expost.common.util.redis;
+package com.spr.expost.util.redis;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -3,7 +3,7 @@ package com.spr.expost.comment.controller;
 import com.spr.expost.common.dto.ApiResponseDto;
 import com.spr.expost.comment.dto.CommentRequestDto;
 import com.spr.expost.comment.dto.CommentResponseDto;
-import com.spr.expost.common.security.UserDetailsImpl;
+import com.spr.expost.security.UserDetailsImpl;
 import com.spr.expost.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

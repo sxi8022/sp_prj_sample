@@ -1,10 +1,10 @@
-package com.spr.expost.common.config;
+package com.spr.expost.config;
 
 
-import com.spr.expost.common.jwt.JwtUtil;
-import com.spr.expost.common.security.JwtAuthenticationFilter;
-import com.spr.expost.common.security.JwtAuthorizationFilter;
-import com.spr.expost.common.security.UserDetailsServiceImpl;
+import com.spr.expost.jwt.JwtUtil;
+import com.spr.expost.security.JwtAuthenticationFilter;
+import com.spr.expost.security.JwtAuthorizationFilter;
+import com.spr.expost.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
