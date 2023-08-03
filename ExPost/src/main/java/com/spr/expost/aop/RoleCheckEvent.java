@@ -3,6 +3,8 @@ package com.spr.expost.aop;
 
 import com.spr.expost.comment.dto.CommentRequestDto;
 import com.spr.expost.post.dto.PostRequestDto;
+import com.spr.expost.post.service.PostService;
+import com.spr.expost.post.vo.Post;
 import com.spr.expost.security.UserDetailsImpl;
 import com.spr.expost.user.vo.User;
 import com.spr.expost.user.vo.UserRoleEnum;
@@ -18,7 +20,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import com.spr.expost.post.repository.PostRepository;
 
 @Slf4j(topic = "RoleCheckAop")
 @Aspect
@@ -28,7 +29,7 @@ public class RoleCheckEvent {
 
   private final MessageSource messagesource; // MessageSource  포로퍼티 값을 자동으로 읽어와 bean 생성
 
-  private PostRepository postRepository;
+  private final PostService postService;
 
 
   @Pointcut("execution(* com.spr.expost.post.service.PostService.updatePost(..))")
@@ -48,7 +49,8 @@ public class RoleCheckEvent {
   public Object executePostRoleCheck(ProceedingJoinPoint joinPoint) throws Throwable {
     // 첫번째 매개변수로 게시글 받아옴
     PostRequestDto postDto = (PostRequestDto) joinPoint.getArgs()[0];
-    User postUser = postRepository.findPostById(postDto.getId());
+
+    Post origin = postService.checkValidPost(postDto.getId());
 
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth != null && auth.getPrincipal().getClass() == UserDetailsImpl.class) {
@@ -57,7 +59,7 @@ public class RoleCheckEvent {
       User loginUser = userDetails.getUser();
 
       // 게시글 작성자(post.user) 와 요청자(user) 가 같은지 또는 Admin 인지 체크 (아니면 예외발생)
-      if (!(loginUser.getRole().equals(UserRoleEnum.ADMIN) || postUser.equals(loginUser))) {
+      if (!(loginUser.getRole().equals(UserRoleEnum.ADMIN) || origin.getUser().getUserId().equals(loginUser.getUserId()))) {
         throw new RejectedExecutionException(
             messagesource.getMessage(
                 "not.auth.post.updateAndDelete.writer",

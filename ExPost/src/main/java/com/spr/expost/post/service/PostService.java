@@ -6,14 +6,14 @@ import com.spr.expost.comment.dto.CommentResponseDto;
 import com.spr.expost.comment.repository.CommentRepository;
 import com.spr.expost.exception.PostNotFoundException;
 import com.spr.expost.jwt.JwtUtil;
-import com.spr.expost.post.dao.PostDao;
+import com.spr.expost.post.dto.PostConvert;
 import com.spr.expost.post.dto.PostRequestDto;
 import com.spr.expost.post.dto.PostResponseDto;
 import com.spr.expost.post.repository.PostCategoryRepository;
 import com.spr.expost.post.repository.PostLikeRepository;
 import com.spr.expost.post.repository.PostRepository;
 import com.spr.expost.post.vo.Post;
-import com.spr.expost.post.vo.PostLike;
+import com.spr.expost.post.vo.PostCategory;
 import com.spr.expost.security.UserDetailsImpl;
 import com.spr.expost.user.vo.User;
 import com.spr.expost.user.vo.UserRoleEnum;
@@ -54,7 +54,7 @@ public class PostService {
      * 등록
      * */
     @Transactional
-    public PostResponseDto savePost(PostRequestDto postDto, UserDetailsImpl userDetails) {
+    public PostResponseDto savePost(PostRequestDto requestDto, UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
         /*
          * 로그인 검증
@@ -68,17 +68,14 @@ public class PostService {
             ));
         }
 
-        PostDao dao = new PostDao();
-        postDto.setUser(user);
-        postDto.setViewCount(0); // 조회수 최초 0
-
-        Post post = postRepository.save(dao.toEntity(postDto));
-        PostResponseDto responseDto = dao.ConvertToDto(post);
-
-
-        /*List<String> categories = post.getPostCategoryList();
-
-        // 게시글별 카테고리  테이블에 추가
+        requestDto.setUser(user);
+        requestDto.setViewCount(0); // 조회수 최초 0
+        PostConvert postConvert = new PostConvert();
+        Post post = postConvert.toEntity(requestDto);
+        // 자식테이블에서 저장 로직이 실행되면 불필요
+        //Post post = postRepository.save(postConvert.toEntity(requestDto));
+        // 카테고리가 없으면 카테고리 테이블에 신규생성, 있으면 생성하지 않음
+        List<String> categories = requestDto.getCategories();
         for (String categoryName : categories) {
             Optional<Category> originCategory = categoryRepository.findByName(categoryName);
             if (originCategory.isEmpty()){
@@ -88,7 +85,9 @@ public class PostService {
                 postCategoryRepository.save(new PostCategory(post, originCategory.get()));
             }
         }
-        PostResponseDto responseDto = dao.ConvertToDtoWithCategories(post, categories);*/
+
+        PostResponseDto responseDto = postConvert.convertToDto(post);
+
         return responseDto;
     }
 
@@ -98,13 +97,13 @@ public class PostService {
     @Transactional
     public PostResponseDto getPost(Long id) {
         Optional<Post> postWrapper = postRepository.findById(id);
-        PostResponseDto postResponseDto;
-        PostDao dao = new PostDao();
+        PostResponseDto requestDto;
+        PostConvert postConvert = new PostConvert();
         if (postWrapper.isPresent()) {
             Post post = postWrapper.get();
             List<CommentResponseDto> commentList = commentRepository.findAllByPost(post);
             // dto로 리턴
-            PostResponseDto responseDto = dao.ConvertToDtoWithLists(post, commentList);
+            PostResponseDto responseDto = postConvert.convertToDtoWithLists(post, commentList);
 
             // 조회수 증가
             int viewCountResult = postRepository.addViewCount(post);
@@ -155,14 +154,14 @@ public class PostService {
         Pageable pageable = PageRequest.of(page, size, sort);
         UserRoleEnum userRoleEnum = user.getRole();
         Page<Post> postList;
+        PostConvert postConvert = new PostConvert();
 
         if (userRoleEnum == UserRoleEnum.USER) {
             postList = postRepository.findAllByUser(user, pageable);
         } else {
             postList = postRepository.findAll(pageable);
         }
-        PostDao dao = new PostDao();
-        Page<PostResponseDto> resultDtoList = postList.map(v -> dao.ConvertToDto(v));
+        Page<PostResponseDto> resultDtoList = postList.map(v -> postConvert.convertToDto(v));
 
         return resultDtoList;
     }
@@ -183,11 +182,11 @@ public class PostService {
                         )
                         )
                 );
-        PostDao dao = new PostDao();
+        PostConvert postConvert = new PostConvert();
 
         List<Long> postIdList = postCategoryRepository.findAllByCategory(vo)
                 .stream().map(category -> category.getPost().getId()).toList();
-        return postRepository.findAllByIdIn(postIdList, pageable).map(v->dao.ConvertToDto(v));
+        return postRepository.findAllByIdIn(postIdList, pageable).map(v->postConvert.convertToDto(v));
     }
 
 
@@ -196,6 +195,7 @@ public class PostService {
      * */
     @Transactional
     public PostResponseDto updatePost(PostRequestDto requestDto, UserDetailsImpl userDetails) {
+
         User user = userDetails.getUser();
 
         // 수정 시 카테고리가 한건도없으면 시스템 에러
@@ -211,18 +211,16 @@ public class PostService {
             );
         }
 
-        PostDao dao = new PostDao();
+        PostConvert postConvert = new PostConvert();
         requestDto.setUser(user);
         // 원래 정보
         Post origin = this.checkValidPost(requestDto.getId());
-        // 좋아요 테이블 값 가져오기
-        List<PostLike> postLikes = postLikeRepository.findAllByPostId(requestDto.getId());
-        // postDto.setPostLikes(postLikes);
-
+        PostRequestDto originDto = postConvert.convertToRequestDto(origin);
+        originDto.setContent(requestDto.getContent());
+        originDto.setTitle(requestDto.getTitle());
         PostResponseDto responseDto;
-        Post post = dao.toEntity(requestDto);
-        Post result = postRepository.save(post);
-        responseDto = dao.ConvertToDto(result);
+        origin.update(originDto);
+        responseDto = postConvert.convertToDto(origin);
 
         return responseDto;
     }
@@ -243,7 +241,7 @@ public class PostService {
     /**
      * 게시글이 있는지 확인
      */
-    private Post checkValidPost(Long id) {
+    public Post checkValidPost(Long id) {
         return postRepository.findById(id).orElseThrow(
                 () -> new PostNotFoundException(
                         messagesource.getMessage(

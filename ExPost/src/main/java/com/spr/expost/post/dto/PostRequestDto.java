@@ -2,6 +2,7 @@ package com.spr.expost.post.dto;
 
 import com.spr.expost.user.vo.User;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,4 +24,5 @@ public class PostRequestDto {
     private User user;
     private Integer likeCount; //좋아요 수
     private Integer viewCount; // 조회수
+    private List<String> categories;
 }

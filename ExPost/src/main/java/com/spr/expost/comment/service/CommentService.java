@@ -1,6 +1,5 @@
 package com.spr.expost.comment.service;
 
-import com.spr.expost.comment.dao.CommentDao;
 import com.spr.expost.comment.dto.CommentRequestDto;
 import com.spr.expost.comment.dto.CommentResponseDto;
 import com.spr.expost.comment.repository.CommentLikeRepository;
@@ -102,12 +101,12 @@ public class CommentService {
         }
 
         Comment newComment = commentRepository.save(comment);
-        CommentDao dao = new CommentDao();
+
         CommentResponseDto responseDto = null;
         if (parent != null) {
-            responseDto = dao.ConvertToDtoWithParent(newComment);
+            responseDto = requestDto.ConvertToDtoWithParent(newComment);
         } else {
-            responseDto = dao.ConvertToDto(newComment);
+            responseDto = requestDto.ConvertToDto(newComment);
         }
 
         return responseDto;
@@ -150,7 +149,6 @@ public class CommentService {
         );
 
         CommentResponseDto responseDto;
-        CommentDao dao = new CommentDao();
         /*
          * 수정하려고 하는 댓글의 작성자가 본인인지, 관리자 계정으로 수정하려고 하는지 확인.
          *  checkValid 결과 true 면 데이터리턴 아니면 예외 발생
@@ -160,9 +158,9 @@ public class CommentService {
         requestDto.setId(comment.getId());
         List<CommentLike> commentLikes = commentLikeRepository.findByCommentId(comment.getId());
         requestDto.setCommentLikes(commentLikes);
-        Comment newComment = dao.toUpdateEntity(requestDto);
+        Comment newComment = requestDto.toUpdateEntity(requestDto);
         Comment resultComm = commentRepository.save(newComment);
-        responseDto = dao.ConvertToDto(resultComm);
+        responseDto = requestDto.ConvertToDto(resultComm);
         return responseDto;
     }
 
