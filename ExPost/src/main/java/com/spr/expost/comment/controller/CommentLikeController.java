@@ -2,7 +2,7 @@ package com.spr.expost.comment.controller;
 
 import com.spr.expost.common.dto.ApiResponseDto;
 import com.spr.expost.comment.dto.CommentLikeRequestDto;
-import com.spr.expost.comment.service.CommentLikeService;
+import com.spr.expost.comment.service.CommentLikeServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/boards/posts/comments/likes")
 public class CommentLikeController {
 
-    private final CommentLikeService likeService;
+    private final CommentLikeServiceImpl likeService;
     /**
      * 좋아요
      * */

@@ -3,7 +3,7 @@ package com.spr.expost.user.controller;
 import com.spr.expost.user.dto.SignupRequestDto;
 import com.spr.expost.user.dto.UserRequestDto;
 import com.spr.expost.security.UserDetailsImpl;
-import com.spr.expost.user.service.UserService;
+import com.spr.expost.user.service.UserServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ import java.util.HashMap;
 @RequestMapping("/user")
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     /**
      * 회원가입

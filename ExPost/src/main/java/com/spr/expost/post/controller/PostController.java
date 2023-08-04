@@ -3,7 +3,7 @@ package com.spr.expost.post.controller;
 import com.spr.expost.post.dto.PostRequestDto;
 import com.spr.expost.post.dto.PostResponseDto;
 import com.spr.expost.security.UserDetailsImpl;
-import com.spr.expost.post.service.PostService;
+import com.spr.expost.post.service.PostServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/boards")
 public class PostController {
-    private PostService postService;
+    private PostServiceImpl postService;
 
-    public PostController(PostService postService) {
+    public PostController(PostServiceImpl postService) {
         this.postService = postService;
     }
 

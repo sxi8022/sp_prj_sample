@@ -3,7 +3,7 @@ package com.spr.expost.aop;
 
 import com.spr.expost.comment.dto.CommentRequestDto;
 import com.spr.expost.post.dto.PostRequestDto;
-import com.spr.expost.post.service.PostService;
+import com.spr.expost.post.service.PostServiceImpl;
 import com.spr.expost.post.vo.Post;
 import com.spr.expost.security.UserDetailsImpl;
 import com.spr.expost.user.vo.User;
@@ -29,19 +29,19 @@ public class RoleCheckEvent {
 
   private final MessageSource messagesource; // MessageSource  포로퍼티 값을 자동으로 읽어와 bean 생성
 
-  private final PostService postService;
+  private final PostServiceImpl postService;
 
 
-  @Pointcut("execution(* com.spr.expost.post.service.PostService.updatePost(..))")
+  @Pointcut("execution(* com.spr.expost.post.service.PostServiceImpl.updatePost(..))")
   private void updatePost() {}
 
-  @Pointcut("execution(* com.spr.expost.post.service.PostService.deletePost(..))")
+  @Pointcut("execution(* com.spr.expost.post.service.PostServiceImpl.deletePost(..))")
   private void deletePost() {}
 
-  @Pointcut("execution(* com.spr.expost.comment.service.CommentService.updateComment(..))")
+  @Pointcut("execution(* com.spr.expost.comment.service.CommentServiceImpl.updateComment(..))")
   private void updateComment() {}
 
-  @Pointcut("execution(* com.spr.expost.comment.service.CommentService.deleteComment(..))")
+  @Pointcut("execution(* com.spr.expost.comment.service.CommentServiceImpl.deleteComment(..))")
   private void deleteComment() {}
 
 
