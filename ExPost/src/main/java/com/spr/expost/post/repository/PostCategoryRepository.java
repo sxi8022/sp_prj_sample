@@ -1,6 +1,6 @@
 package com.spr.expost.post.repository;
 
-import com.spr.expost.category.vo.Category;
+import com.spr.expost.category.entity.Category;
 import com.spr.expost.post.entity.PostCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 

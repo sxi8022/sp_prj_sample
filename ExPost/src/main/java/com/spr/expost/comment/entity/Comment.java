@@ -1,7 +1,8 @@
 package com.spr.expost.comment.entity;
 
-import com.spr.expost.user.entity.User;
+import com.spr.expost.common.entity.Timestamped;
 import com.spr.expost.post.entity.Post;
+import com.spr.expost.user.entity.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,7 +32,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "comment")
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class Comment extends com.spr.expost.vo.Timestamped {
+public class Comment extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,7 +1,7 @@
 package com.spr.expost.post.service;
 
 import com.spr.expost.category.repository.CategoryRepository;
-import com.spr.expost.category.vo.Category;
+import com.spr.expost.category.entity.Category;
 import com.spr.expost.comment.dto.CommentResponseDto;
 import com.spr.expost.comment.repository.CommentRepository;
 import com.spr.expost.exception.PostNotFoundException;
