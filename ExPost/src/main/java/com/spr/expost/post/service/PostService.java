@@ -2,7 +2,7 @@ package com.spr.expost.post.service;
 
 import com.spr.expost.post.dto.PostRequestDto;
 import com.spr.expost.post.dto.PostResponseDto;
-import com.spr.expost.post.vo.Post;
+import com.spr.expost.post.entity.Post;
 import com.spr.expost.security.UserDetailsImpl;
 import org.springframework.data.domain.Page;
 

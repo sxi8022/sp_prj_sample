@@ -2,7 +2,7 @@ package com.spr.expost.user.service;
 
 import com.spr.expost.user.dto.SignupRequestDto;
 import com.spr.expost.user.dto.UserRequestDto;
-import com.spr.expost.user.vo.User;
+import com.spr.expost.user.entity.User;
 import java.util.HashMap;
 import org.springframework.http.ResponseEntity;
 

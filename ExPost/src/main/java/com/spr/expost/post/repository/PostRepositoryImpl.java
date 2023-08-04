@@ -1,9 +1,9 @@
 package com.spr.expost.post.repository;
 
-import static com.spr.expost.post.vo.QPost.post;
+import static com.spr.expost.post.entity.QPost.post;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.spr.expost.post.vo.Post;
+import com.spr.expost.post.entity.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

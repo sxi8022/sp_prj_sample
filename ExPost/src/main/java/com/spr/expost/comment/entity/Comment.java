@@ -1,7 +1,7 @@
-package com.spr.expost.comment.vo;
+package com.spr.expost.comment.entity;
 
-import com.spr.expost.user.vo.User;
-import com.spr.expost.post.vo.Post;
+import com.spr.expost.user.entity.User;
+import com.spr.expost.post.entity.Post;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -1,11 +1,11 @@
 package com.spr.expost.comment.repository;
 
-import static com.spr.expost.comment.vo.QComment.comment;
+import static com.spr.expost.comment.entity.QComment.comment;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.spr.expost.comment.dto.CommentResponseDto;
-import com.spr.expost.comment.vo.Comment;
-import com.spr.expost.post.vo.Post;
+import com.spr.expost.comment.entity.Comment;
+import com.spr.expost.post.entity.Post;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

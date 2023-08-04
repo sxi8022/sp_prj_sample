@@ -1,6 +1,6 @@
 package com.spr.expost.post.dto;
 
-import com.spr.expost.user.vo.User;
+import com.spr.expost.user.entity.User;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;

@@ -1,8 +1,8 @@
 package com.spr.expost.post.dto;
 
 import com.spr.expost.comment.dto.CommentResponseDto;
-import com.spr.expost.post.vo.PostLike;
-import com.spr.expost.user.vo.User;
+import com.spr.expost.post.entity.PostLike;
+import com.spr.expost.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;

@@ -1,7 +1,7 @@
 package com.spr.expost.security;
 
-import com.spr.expost.user.vo.User;
-import com.spr.expost.user.vo.UserRoleEnum;
+import com.spr.expost.user.entity.User;
+import com.spr.expost.user.entity.UserRoleEnum;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

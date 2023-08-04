@@ -2,7 +2,7 @@ package com.spr.expost.comment.service;
 
 import com.spr.expost.comment.dto.CommentRequestDto;
 import com.spr.expost.comment.dto.CommentResponseDto;
-import com.spr.expost.comment.vo.Comment;
+import com.spr.expost.comment.entity.Comment;
 import com.spr.expost.common.dto.ApiResponseDto;
 import com.spr.expost.security.UserDetailsImpl;
 

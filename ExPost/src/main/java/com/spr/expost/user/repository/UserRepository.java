@@ -1,6 +1,6 @@
 package com.spr.expost.user.repository;
 
-import com.spr.expost.user.vo.User;
+import com.spr.expost.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

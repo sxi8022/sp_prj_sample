@@ -1,7 +1,7 @@
 package com.spr.expost.security;
 
 import com.spr.expost.user.repository.UserRepository;
-import com.spr.expost.user.vo.User;
+import com.spr.expost.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

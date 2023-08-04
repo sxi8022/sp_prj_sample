@@ -1,7 +1,7 @@
 package com.spr.expost.post.repository;
 
-import com.spr.expost.post.vo.Post;
-import com.spr.expost.user.vo.User;
+import com.spr.expost.post.entity.Post;
+import com.spr.expost.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

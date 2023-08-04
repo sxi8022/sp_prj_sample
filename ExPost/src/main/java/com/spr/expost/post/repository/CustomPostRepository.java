@@ -1,6 +1,6 @@
 package com.spr.expost.post.repository;
 
-import com.spr.expost.post.vo.Post;
+import com.spr.expost.post.entity.Post;
 
 public interface CustomPostRepository {
 

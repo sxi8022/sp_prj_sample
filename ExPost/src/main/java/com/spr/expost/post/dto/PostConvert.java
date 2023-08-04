@@ -1,8 +1,8 @@
 package com.spr.expost.post.dto;
 
 import com.spr.expost.comment.dto.CommentResponseDto;
-import com.spr.expost.post.vo.Post;
-import com.spr.expost.post.vo.PostCategory;
+import com.spr.expost.post.entity.Post;
+import com.spr.expost.post.entity.PostCategory;
 import java.util.ArrayList;
 import java.util.List;
 

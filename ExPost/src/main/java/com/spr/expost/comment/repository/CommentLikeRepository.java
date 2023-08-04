@@ -1,8 +1,8 @@
 package com.spr.expost.comment.repository;
 
-import com.spr.expost.comment.vo.Comment;
-import com.spr.expost.comment.vo.CommentLike;
-import com.spr.expost.user.vo.User;
+import com.spr.expost.comment.entity.Comment;
+import com.spr.expost.comment.entity.CommentLike;
+import com.spr.expost.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

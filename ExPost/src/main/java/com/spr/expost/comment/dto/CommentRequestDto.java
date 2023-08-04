@@ -1,9 +1,9 @@
 package com.spr.expost.comment.dto;
 
-import com.spr.expost.comment.vo.Comment;
-import com.spr.expost.comment.vo.CommentLike;
-import com.spr.expost.post.vo.Post;
-import com.spr.expost.user.vo.User;
+import com.spr.expost.comment.entity.Comment;
+import com.spr.expost.comment.entity.CommentLike;
+import com.spr.expost.post.entity.Post;
+import com.spr.expost.user.entity.User;
 import java.util.ArrayList;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
