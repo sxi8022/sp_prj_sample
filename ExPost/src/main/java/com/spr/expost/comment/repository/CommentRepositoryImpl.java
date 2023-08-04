@@ -37,6 +37,8 @@ public class CommentRepositoryImpl implements CustomCommentRepository {
             .id(v.getId())
             .content(v.getContent())
             .likeCount(v.getLikeCount())
+            .createDate(v.getCreateDate())
+            .username(v.getUser().getUsername())
             .build()
     ).toList();
 
@@ -54,6 +56,8 @@ public class CommentRepositoryImpl implements CustomCommentRepository {
                     .content(v.getContent())
                     .likeCount(v.getLikeCount())
                     .parentId(v.getParent() != null ? v.getParent().getId() : null)
+                    .createDate(v.getCreateDate())
+                    .username(v.getUser().getUsername())
                     .build()
         ).toList();
 

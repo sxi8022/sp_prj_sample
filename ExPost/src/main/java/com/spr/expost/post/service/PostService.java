@@ -97,7 +97,6 @@ public class PostService {
     @Transactional
     public PostResponseDto getPost(Long id) {
         Optional<Post> postWrapper = postRepository.findById(id);
-        PostResponseDto requestDto;
         PostConvert postConvert = new PostConvert();
         if (postWrapper.isPresent()) {
             Post post = postWrapper.get();
@@ -106,20 +105,9 @@ public class PostService {
             PostResponseDto responseDto = postConvert.convertToDtoWithLists(post, commentList);
 
             // 조회수 증가
-            int viewCountResult = postRepository.addViewCount(post);
-            if (viewCountResult > 0) {
-                responseDto.setViewCount(responseDto.getViewCount()+1);
-                return responseDto;
-            } else {
-                throw new IllegalArgumentException(
-                        messagesource.getMessage(
-                                "create.error.runtime",
-                                null,
-                                "error",
-                                Locale.getDefault() //기본언어 설정
-                        )
-                );
-            }
+            postRepository.addViewCount(post);
+            responseDto.setViewCount(responseDto.getViewCount()+1);
+            return responseDto;
         } else {
             throw new PostNotFoundException(
                     messagesource.getMessage(
