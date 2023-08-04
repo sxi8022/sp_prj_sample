@@ -2,7 +2,7 @@ package com.spr.expost.post.controller;
 
 import com.spr.expost.common.dto.ApiResponseDto;
 import com.spr.expost.post.dto.PostLikeRequestDto;
-import com.spr.expost.post.service.PostLikeService;
+import com.spr.expost.post.service.PostLikeServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/boards/posts/likes")
 public class PostLikeController {
-    private final PostLikeService likeService;
+    private final PostLikeServiceImpl likeService;
 
     /**
      * 좋아요

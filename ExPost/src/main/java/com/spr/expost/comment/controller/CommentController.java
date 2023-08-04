@@ -4,7 +4,7 @@ import com.spr.expost.common.dto.ApiResponseDto;
 import com.spr.expost.comment.dto.CommentRequestDto;
 import com.spr.expost.comment.dto.CommentResponseDto;
 import com.spr.expost.security.UserDetailsImpl;
-import com.spr.expost.comment.service.CommentService;
+import com.spr.expost.comment.service.CommentServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/boards")
 @RestController
 public class CommentController {
-    private final CommentService commentService;
+    private final CommentServiceImpl commentService;
 
     /**
      *  댓글 등록
