@@ -22,7 +22,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Builder
@@ -50,10 +49,6 @@ public class Comment extends Timestamped {
     @ManyToOne
     @JoinColumn(name = "user_id", updatable=false)
     private User user; // 작성자
-
-    @ColumnDefault("0")
-    @Column(name = "like_count", nullable = false)
-    private Integer likeCount;
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentLike> commentLikes = new ArrayList<>();
@@ -99,8 +94,9 @@ public class Comment extends Timestamped {
         this.user = user;
     }
 
-    public void setLikeCount(Integer likeCount) {
-        this.likeCount = likeCount;
+    // 테스트용도
+    public void updateTest(String updateContent) {
+        this.content = updateContent;
     }
 
 }

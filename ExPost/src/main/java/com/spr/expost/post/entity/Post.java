@@ -91,6 +91,13 @@ public class Post extends Timestamped {
     }
 
 
+    // 테스트용도
+    public void updateTest(String updateTitle, String updateContent) {
+        this.title = updateTitle;
+        this.content = updateContent;
+    }
+
+
 
     public void setId(Long id) {
         this.id = id;
