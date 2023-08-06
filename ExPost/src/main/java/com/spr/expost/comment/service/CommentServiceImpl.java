@@ -95,7 +95,6 @@ public class CommentServiceImpl implements CommentService{
         comment.setContent(requestDto.getContent());
         comment.setUser(user);
         comment.setPost(post);
-        comment.setLikeCount(0); // 처음에 좋아요는 0
         if (null != parent) {
             comment.updateParent(parent);
         }

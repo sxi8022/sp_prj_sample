@@ -30,4 +30,7 @@ public interface PostService {
 
   // 게시글 1건 조회
   public Post checkValidPost(Long id);
+
+  // 게시글 이름으로 검색
+  Page<PostResponseDto> getPostListByPostName(int i, int size, String sortBy, boolean isAsc, String postName);
 }

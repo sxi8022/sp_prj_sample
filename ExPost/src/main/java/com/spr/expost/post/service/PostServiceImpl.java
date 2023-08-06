@@ -179,6 +179,26 @@ public class PostServiceImpl implements PostService{
 
 
     /*
+    * 게시글명 검색 조회
+    * 
+    * */
+    @Override
+    @Transactional
+    public Page<PostResponseDto> getPostListByPostName(int page, int size, String sortBy,
+        boolean isAsc,
+        String postName) {
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<PostResponseDto> postResult = postRepository.findByName(postName, pageable);
+
+        return postResult;
+    }
+
+
+
+    /*
      * 수정
      * */
     @Transactional
@@ -241,6 +261,5 @@ public class PostServiceImpl implements PostService{
                 )
         );
     }
-
-
+    
 }

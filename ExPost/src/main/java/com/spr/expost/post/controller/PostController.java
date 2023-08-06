@@ -25,6 +25,8 @@ public class PostController {
 
     /**
      * 조회
+     * postName 값이 비어있으면 기존 조회 기능 수행
+     * postName 값이 있으면 검색기능 수행
      * */
     @GetMapping("/postlist")
     @ResponseBody
@@ -33,10 +35,17 @@ public class PostController {
             @RequestParam("size") int size,
             @RequestParam("sortBy") String sortBy,
             @RequestParam("isAsc") boolean isAsc,
+            @RequestParam(value="postName", required = false) String postName,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        Page<PostResponseDto> postDtoList = postService.getPostList(userDetails,
+        Page<PostResponseDto> postDtoList;
+        if (postName != null && !postName.isEmpty()) {
+            postDtoList = postService.getPostListByPostName(page-1, size, sortBy, isAsc, postName);
+
+        } else {
+            postDtoList = postService.getPostList(userDetails,
                 page-1, size, sortBy, isAsc);
+        }
         return new ResponseEntity<>(postDtoList, HttpStatus.OK);
     }
 

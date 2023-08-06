@@ -34,6 +34,7 @@ public class PostResponseDto {
 
     private List<String> categories;// 카테고리
 
+    private String username;
 
     public void setComments(List<CommentResponseDto> comments) {
         this.comments = new ArrayList<>();

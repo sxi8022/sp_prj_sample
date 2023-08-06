@@ -44,7 +44,7 @@ public class CommentRequestDto {
             .createDate(comment.getCreateDate())
             .postId(comment.getPost().getId())
             .postTitle(comment.getPost().getTitle())
-            .likeCount(comment.getLikeCount())
+            .likeCount(comment.getCommentLikes().size())
             .username(comment.getUser().getUsername())
             .build();
     }
@@ -60,7 +60,7 @@ public class CommentRequestDto {
             .createDate(comment.getCreateDate())
             .postId(comment.getPost().getId())
             .postTitle(comment.getPost().getTitle())
-            .likeCount(comment.getLikeCount())
+            .likeCount(comment.getCommentLikes().size())
             .username(comment.getUser().getUsername())
             .parentId(comment.getParent() == null ? 0 : comment.getParent().getId())
             .children(comment.getChildren() == null ? new ArrayList<CommentResponseDto>() : comment.getChildren().stream().map(v -> ConvertToDto(v)).toList())
@@ -74,7 +74,6 @@ public class CommentRequestDto {
             .content(dto.getContent())
             .user(dto.getUser())
             .post(dto.getPost())
-            .likeCount(dto.getLikeCount())
             .commentLikes(dto.getCommentLikes())
             .build();
 
